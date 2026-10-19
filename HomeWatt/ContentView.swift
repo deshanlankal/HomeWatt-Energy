@@ -3,32 +3,17 @@ import SwiftUI
 
 struct ContentView: View {
 
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
+
     var body: some View {
-
-        VStack(spacing: 20) {
-
-            Image(systemName: "bolt.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(.green)
-
-            Text("HomeWatt")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-
-            Text("Your Smart Energy Companion")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            Button("Get Started") {
-                print("Get Started button tapped")
+        Group {
+            if horizontalSizeClass == .regular {
+                MainSidebarView()
+            } else {
+                MainTabView()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.green)
-            .padding(.top, 20)
-
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
     }
 }
 
