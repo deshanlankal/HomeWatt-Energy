@@ -1,26 +1,87 @@
 
 import SwiftUI
+import FirebaseAuth
 
 struct ContentView: View {
 
     @State private var authViewModel = AuthViewModel()
+    @State private var householdViewModel = HouseholdViewModel()
 
     @Environment(\.horizontalSizeClass)
     private var horizontalSizeClass
 
     var body: some View {
         Group {
-            if authViewModel.isAuthenticated {
-                if horizontalSizeClass == .regular {
-                    MainSidebarView()
-                } else {
-                    MainTabView()
-                }
-            } else {
+            if !authViewModel.isAuthenticated {
                 LoginView(authViewModel: authViewModel)
+
+            } else if !householdViewModel.hasLoadedHousehold {
+                ProgressView("Loading your household...")
+
+            } else if householdViewModel.errorMessage != nil
+                        && !householdViewModel.hasHousehold {
+                householdErrorView
+
+            } else if !householdViewModel.hasHousehold {
+                HouseholdOnboardingView(
+                    householdViewModel: householdViewModel
+                )
+
+            } else {
+                mainApplicationView
             }
         }
         .environment(authViewModel)
+        .environment(householdViewModel)
+        .task(id: authViewModel.currentUser?.uid) {
+            householdViewModel.reset()
+
+            guard authViewModel.isAuthenticated else {
+                return
+            }
+
+            await householdViewModel.loadHousehold()
+        }
+    }
+
+    @ViewBuilder
+    private var mainApplicationView: some View {
+        if horizontalSizeClass == .regular {
+            MainSidebarView()
+        } else {
+            MainTabView()
+        }
+    }
+
+    private var householdErrorView: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "wifi.exclamationmark")
+                .font(.system(size: 48))
+                .foregroundStyle(.orange)
+
+            Text("Unable to Load Household")
+                .font(.title2.bold())
+
+            Text(
+                householdViewModel.errorMessage
+                ?? "An unexpected error occurred."
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+
+            Button("Try Again") {
+                Task {
+                    await householdViewModel.loadHousehold()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+
+            Button("Sign Out") {
+                authViewModel.logout()
+            }
+        }
+        .padding(24)
     }
 }
 
