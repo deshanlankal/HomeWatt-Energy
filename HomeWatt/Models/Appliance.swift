@@ -33,6 +33,7 @@ enum ApplianceCategory: String, Codable, CaseIterable, Identifiable {
         }
     }
 
+    
     var symbolName: String {
         switch self {
         case .airConditioner: "air.conditioner.horizontal"
