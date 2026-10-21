@@ -27,6 +27,13 @@ struct DashboardView: View {
             appliances: applianceViewModel.appliances
         )
     }
+    
+    private var monthlyCostEstimate: ElectricityCostEstimate {
+        ElectricityCostService.monthlyEstimate(
+            appliances: applianceViewModel.appliances
+        )
+    }
+
 
     private var todayEnergyKWh: Double {
         simulationViewModel.totalEnergyKWh
@@ -98,6 +105,52 @@ struct DashboardView: View {
                             icon: "calendar"
                         )
                     }
+
+                    
+                    // MARK: - Estimated Electricity Bill
+
+                    VStack(alignment: .leading, spacing: 12) {
+
+                        Label(
+                            "Estimated Monthly Electricity Bill",
+                            systemImage: "creditcard"
+                        )
+                        .font(.headline)
+
+                        Text(
+                            ElectricityCostService.formatLKR(
+                                monthlyCostEstimate.totalCostLKR
+                            )
+                        )
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(HomeWattTheme.primary)
+
+                        Text(
+                            String(
+                                format: "%.1f kWh × Rs. %.2f/kWh",
+                                monthlyCostEstimate.energyKWh,
+                                monthlyCostEstimate.ratePerKWh
+                            )
+                        )
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                        Divider()
+
+                        Label(
+                            "This is a simulated flat-rate estimate, not an official electricity bill.",
+                            systemImage: "info.circle"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        Color(.secondarySystemGroupedBackground),
+                        in: RoundedRectangle(cornerRadius: 16)
+                    )
 
                     // MARK: - Energy Chart
 
