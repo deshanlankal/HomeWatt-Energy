@@ -205,6 +205,12 @@ struct DashboardView: View {
                             Color(.secondarySystemGroupedBackground),
                             in: RoundedRectangle(cornerRadius: 16)
                         )
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(
+                            result.isHighEnergy
+                                ? "High simulated energy usage. Current power \(Int(result.currentPowerWatts)) watts exceeds the household threshold of \(Int(result.thresholdWatts)) watts."
+                                : "Simulated energy usage is normal. Current power \(Int(result.currentPowerWatts)) watts is within the household threshold of \(Int(result.thresholdWatts)) watts."
+                        )
                     }
 
                     // MARK: - Estimated Electricity Bill
@@ -515,5 +521,7 @@ struct DashboardView: View {
             Color(.secondarySystemGroupedBackground),
             in: RoundedRectangle(cornerRadius: 14)
         )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title), \(value) \(unit)")
     }
 }

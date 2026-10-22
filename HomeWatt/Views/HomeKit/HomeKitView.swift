@@ -24,6 +24,17 @@ struct HomeKitView: View {
             if let error = service.errorMessage { Section { Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.orange) } }
         }
         .navigationTitle("HomeKit")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    service.refresh()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .disabled(!service.isReady)
+                .accessibilityLabel("Refresh HomeKit accessories")
+            }
+        }
     }
 }
 
@@ -37,12 +48,14 @@ private struct HomeKitAccessoryView: View {
                     ForEach(serviceItem.characteristics, id: \.uniqueIdentifier) { characteristic in
                         if characteristic.characteristicType == HMCharacteristicTypePowerState {
                             Toggle("Power", isOn: Binding(get: { (characteristic.value as? Bool) ?? false }, set: { _ in Task { await service.toggle(characteristic) } }))
+                                .accessibilityHint("Controls the actual HomeKit accessory power state.")
                         } else if let value = characteristic.value {
                             LabeledContent(characteristic.localizedDescription, value: "\(value)")
                         }
                     }
                 }
             }
-        }.navigationTitle(accessory.name)
+        }
+        .navigationTitle(accessory.name)
     }
 }

@@ -17,6 +17,11 @@ final class HomeKitService: NSObject, ObservableObject, HMHomeManagerDelegate {
         isReady = true
     }
 
+    func refresh() {
+        homes = manager.homes
+        errorMessage = nil
+    }
+
     func homeManager(_ manager: HMHomeManager, didUpdateAuthorization status: HMHomeManagerAuthorizationStatus) {
         if status == .restricted || status == .determined { errorMessage = "HomeKit access is unavailable. Check Home access in iOS Settings." }
     }

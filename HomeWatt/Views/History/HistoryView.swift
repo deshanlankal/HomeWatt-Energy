@@ -79,6 +79,14 @@ struct HistoryView: View {
                         householdId == nil ||
                         simulationViewModel.isGenerating
                     )
+                    .accessibilityLabel(
+                        simulationViewModel.isGenerating
+                            ? "Generating simulated energy history"
+                            : "Generate simulated energy history"
+                    )
+                    .accessibilityHint(
+                        "Creates 30-minute simulated energy readings for the selected date."
+                    )
 
                     // MARK: - Messages
 
@@ -171,6 +179,10 @@ struct HistoryView: View {
                         .background(
                             Color(.secondarySystemGroupedBackground),
                             in: RoundedRectangle(cornerRadius: 16)
+                        )
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(
+                            "Electricity consumption chart. \(simulationViewModel.readings.count) simulated readings totaling \(String(format: "%.2f", simulationViewModel.totalEnergyKWh)) kilowatt-hours."
                         )
 
                     } else if !simulationViewModel.isLoading {

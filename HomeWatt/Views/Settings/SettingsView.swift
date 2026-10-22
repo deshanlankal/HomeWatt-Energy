@@ -316,7 +316,7 @@ struct SettingsView: View {
 
                     LabeledContent(
                         "Notifications",
-                        value: "Local iOS"
+                        value: "Local + FCM remote"
                     )
                 }
             }

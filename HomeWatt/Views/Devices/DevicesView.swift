@@ -35,16 +35,10 @@ struct DevicesView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
 
-                        (
-                            Text(
-                                applianceViewModel.totalActivePowerWatts,
-                                format: .number.precision(.fractionLength(0))
-                            )
-                            .font(.largeTitle.bold())
-                            +
-                            Text(" W")
-                                .font(.title2)
+                        Text(
+                            "\(applianceViewModel.totalActivePowerWatts, format: .number.precision(.fractionLength(0))) W"
                         )
+                        .font(.largeTitle.bold())
 
                         Text(
                             "\(applianceViewModel.activeApplianceCount) appliances ON"
@@ -53,6 +47,10 @@ struct DevicesView: View {
                         .foregroundStyle(.secondary)
                     }
                     .padding(.vertical, 8)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(
+                        "Simulated active power, \(Int(applianceViewModel.totalActivePowerWatts)) watts. \(applianceViewModel.activeApplianceCount) appliances on."
+                    )
                 }
 
                 // MARK: - Virtual Appliances
@@ -127,6 +125,11 @@ struct DevicesView: View {
                                 )
                                 .labelsHidden()
                                 .disabled(applianceViewModel.isSaving)
+                                .accessibilityLabel("\(appliance.name) simulated power")
+                                .accessibilityValue(appliance.isOn ? "On" : "Off")
+                                .accessibilityHint(
+                                    "Turns this virtual appliance's simulated power usage on or off."
+                                )
                             }
                             .padding(.vertical, 6)
 
@@ -177,6 +180,8 @@ struct DevicesView: View {
                         Image(systemName: "plus")
                     }
                     .disabled(householdId == nil)
+                    .accessibilityLabel("Add virtual appliance")
+                    .accessibilityHint("Creates an appliance used only for simulated energy usage.")
                 }
             }
 
