@@ -69,7 +69,13 @@ final class HighEnergyAlertManager {
                 thresholdWatts: result.thresholdWatts
             )
 
-            if scheduled { defaults.set(true, forKey: key) }
+            if scheduled {
+                defaults.set(true, forKey: key)
+                await PushNotificationService.shared.sendHighEnergyAlertToOtherDevices(
+                    currentPowerWatts: result.currentPowerWatts,
+                    thresholdWatts: result.thresholdWatts
+                )
+            }
 
         } else {
 

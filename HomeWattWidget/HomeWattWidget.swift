@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import ActivityKit
 
 private struct EnergySnapshot: Codable {
     let activePowerWatts: Double
@@ -48,12 +49,50 @@ struct HomeWattWidgetView: View {
     }
 }
 
-@main
 struct HomeWattWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "HomeWattWidget", provider: EnergyProvider()) { HomeWattWidgetView(entry: $0) }
             .configurationDisplayName("HomeWatt Energy")
             .description("Shows the latest simulated HomeWatt energy summary.")
             .supportedFamilies([.systemSmall, .systemMedium])
+    }
+}
+
+@available(iOS 16.1, *)
+struct EnergyLiveActivityWidget: Widget {
+    var body: some WidgetConfiguration {
+        ActivityConfiguration(for: EnergyLiveActivityAttributes.self) { context in
+            HStack {
+                Image(systemName: context.state.isHighEnergy ? "exclamationmark.triangle.fill" : "bolt.fill")
+                    .foregroundStyle(context.state.isHighEnergy ? .orange : .green)
+                VStack(alignment: .leading) {
+                    Text(context.attributes.householdName).font(.caption)
+                    Text("\(context.state.activePowerWatts, format: .number.precision(.fractionLength(0))) W").font(.headline)
+                }
+                Spacer()
+                Text("\(context.state.todayEnergyKWh, format: .number.precision(.fractionLength(1))) kWh").font(.caption)
+            }
+            .padding(.horizontal)
+            .activityBackgroundTint(.black.opacity(0.15))
+        } dynamicIsland: { context in
+            DynamicIsland {
+                DynamicIslandExpandedRegion(.leading) { Image(systemName: "bolt.fill").foregroundStyle(.green) }
+                DynamicIslandExpandedRegion(.trailing) { Text("\(context.state.activePowerWatts, format: .number.precision(.fractionLength(0))) W").font(.caption.bold()) }
+                DynamicIslandExpandedRegion(.bottom) {
+                    HStack { Text(context.attributes.householdName); Spacer(); Text(context.state.isHighEnergy ? "High simulated usage" : "Simulated monitoring") }
+                        .font(.caption)
+                }
+            } compactLeading: { Image(systemName: "bolt.fill").foregroundStyle(.green) }
+            compactTrailing: { Text("\(context.state.activePowerWatts, format: .number.precision(.fractionLength(0)))") }
+            minimal: { Image(systemName: "bolt.fill").foregroundStyle(.green) }
+        }
+    }
+}
+
+@main
+struct HomeWattWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        HomeWattWidget()
+        if #available(iOS 16.1, *) { EnergyLiveActivityWidget() }
     }
 }

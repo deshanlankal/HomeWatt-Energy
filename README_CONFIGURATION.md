@@ -14,4 +14,4 @@ Deploy `firestore.rules` through the Firebase CLI or Console after reviewing it.
 
 ## Diagnostics SDK
 
-For a university build, Firebase Crashlytics is the recommended additional diagnostics SDK: add the `FirebaseCrashlytics` SPM product and the run-script integration in Xcode, then call `Crashlytics.crashlytics().setUserID(...)` after Firebase login. This needs no separate paid service or app secret. It is intentionally not linked here because the current Firebase SPM selection does not include Crashlytics and command-line Xcode project mutation cannot resolve it safely without Xcode installed.
+Sentry is included as a Swift Package diagnostics SDK and is configured to avoid sending default personally identifiable information. Create a Sentry project only if you want remote diagnostics, then add its DSN as a `SentryDSN` key in the app target's Info configuration. Without that value, Sentry is inert and the app works normally.

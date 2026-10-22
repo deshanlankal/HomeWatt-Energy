@@ -12,6 +12,7 @@ import SwiftUI
 struct MainTabView: View {
 
     @State private var selectedTab: AppDestination = .dashboard
+    @EnvironmentObject private var notificationNavigation: NotificationNavigationState
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -36,6 +37,9 @@ struct MainTabView: View {
             }
         }
         .tint(HomeWattTheme.primary)
+        .onChange(of: notificationNavigation.requestedDestination) { _, destination in
+            if let destination { selectedTab = destination; notificationNavigation.requestedDestination = nil }
+        }
     }
 }
 

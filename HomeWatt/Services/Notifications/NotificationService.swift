@@ -72,6 +72,7 @@ final class NotificationService {
         )
 
         content.sound = .default
+        content.userInfo = ["type": "highEnergy", "destination": "dashboard"]
 
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,

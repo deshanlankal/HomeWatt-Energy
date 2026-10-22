@@ -12,6 +12,7 @@ import SwiftUI
 struct MainSidebarView: View {
 
     @State private var selectedDestination: AppDestination? = .dashboard
+    @EnvironmentObject private var notificationNavigation: NotificationNavigationState
 
     var body: some View {
         NavigationSplitView {
@@ -40,6 +41,9 @@ struct MainSidebarView: View {
             }
         }
         .tint(HomeWattTheme.primary)
+        .onChange(of: notificationNavigation.requestedDestination) { _, destination in
+            if let destination { selectedDestination = destination; notificationNavigation.requestedDestination = nil }
+        }
     }
 }
 

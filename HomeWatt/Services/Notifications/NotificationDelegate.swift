@@ -17,4 +17,13 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
 
         return [.banner, .list, .sound]
     }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        await MainActor.run {
+            NotificationNavigationState.shared.route(userInfo: response.notification.request.content.userInfo)
+        }
+    }
 }

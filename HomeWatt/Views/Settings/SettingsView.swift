@@ -109,6 +109,9 @@ struct SettingsView: View {
                         )
                     }
                     .tint(HomeWattTheme.primary)
+                    .onChange(of: highEnergyAlertsEnabled) { _, enabled in
+                        Task { await PushNotificationService.shared.updateHighEnergyPreference(enabled: enabled) }
+                    }
 
                     // Enable Notification Permission
 

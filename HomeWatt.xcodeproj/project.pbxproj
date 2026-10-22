@@ -15,6 +15,9 @@
 		DCCCF9E930872BE5009F211C /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = DCCCF9E830872BE5009F211C /* FirebaseFunctions */; };
 		DCCCF9EB30872BE5009F211C /* FirebaseFunctionsCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = DCCCF9EA30872BE5009F211C /* FirebaseFunctionsCombine-Community */; };
 		DCCCF9ED30872BEE009F211C /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = DCCCF9EC30872BEE009F211C /* FirebaseMessaging */; };
+		E10000000000000000000001 /* HomeWattWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E10000000000000000000002 /* HomeWattWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E10000000000000000000015 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = E10000000000000000000014 /* Sentry */; };
+		E10000000000000000000017 /* HomeWatt/Services/LiveActivity/EnergyLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000016 /* HomeWatt/Services/LiveActivity/EnergyLiveActivityAttributes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,12 +35,35 @@
 			remoteGlobalIDString = DC5A7068306D8DEC0021112A;
 			remoteInfo = HomeWatt;
 		};
+		DCE3A802308A899D00CF0A5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC5A7061306D8DEC0021112A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E10000000000000000000007;
+			remoteInfo = HomeWattWidget;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E10000000000000000000005 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E10000000000000000000001 /* HomeWattWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DC5A7069306D8DEC0021112A /* HomeWatt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeWatt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC5A7076306D8DEE0021112A /* HomeWattTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeWattTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC5A7080306D8DEE0021112A /* HomeWattUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeWattUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E10000000000000000000002 /* HomeWattWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HomeWattWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E10000000000000000000016 /* HomeWatt/Services/LiveActivity/EnergyLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWatt/Services/LiveActivity/EnergyLiveActivityAttributes.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,6 +82,11 @@
 			path = HomeWattUITests;
 			sourceTree = "<group>";
 		};
+		E10000000000000000000003 /* HomeWattWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = HomeWattWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +102,7 @@
 				DCCCF9E930872BE5009F211C /* FirebaseFunctions in Frameworks */,
 				DCCCF9E730872BDC009F211C /* FirebaseFirestoreCombine-Community in Frameworks */,
 				DCCCF9E130872BC7009F211C /* FirebaseAuth in Frameworks */,
+				E10000000000000000000015 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +120,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E10000000000000000000004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -97,8 +136,10 @@
 				DC5A706B306D8DEC0021112A /* HomeWatt */,
 				DC5A7079306D8DEE0021112A /* HomeWattTests */,
 				DC5A7083306D8DEE0021112A /* HomeWattUITests */,
+				E10000000000000000000003 /* HomeWattWidget */,
 				DCCCF9DD30872BB1009F211C /* Frameworks */,
 				DC5A706A306D8DEC0021112A /* Products */,
+				DCE3A88C308A8AF200CF0A5C /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,6 +149,7 @@
 				DC5A7069306D8DEC0021112A /* HomeWatt.app */,
 				DC5A7076306D8DEE0021112A /* HomeWattTests.xctest */,
 				DC5A7080306D8DEE0021112A /* HomeWattUITests.xctest */,
+				E10000000000000000000002 /* HomeWattWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,6 +159,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DCE3A88C308A8AF200CF0A5C /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				E10000000000000000000016 /* HomeWatt/Services/LiveActivity/EnergyLiveActivityAttributes.swift */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,10 +179,12 @@
 				DC5A7065306D8DEC0021112A /* Sources */,
 				DC5A7066306D8DEC0021112A /* Frameworks */,
 				DC5A7067306D8DEC0021112A /* Resources */,
+				E10000000000000000000005 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E10000000000000000000006 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				DC5A706B306D8DEC0021112A /* HomeWatt */,
@@ -147,6 +199,7 @@
 				DCCCF9E830872BE5009F211C /* FirebaseFunctions */,
 				DCCCF9EA30872BE5009F211C /* FirebaseFunctionsCombine-Community */,
 				DCCCF9EC30872BEE009F211C /* FirebaseMessaging */,
+				E10000000000000000000014 /* Sentry */,
 			);
 			productName = HomeWatt;
 			productReference = DC5A7069306D8DEC0021112A /* HomeWatt.app */;
@@ -198,6 +251,28 @@
 			productReference = DC5A7080306D8DEE0021112A /* HomeWattUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		E10000000000000000000007 /* HomeWattWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E10000000000000000000008 /* Build configuration list for PBXNativeTarget "HomeWattWidget" */;
+			buildPhases = (
+				E10000000000000000000009 /* Sources */,
+				E10000000000000000000004 /* Frameworks */,
+				E10000000000000000000010 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E10000000000000000000003 /* HomeWattWidget */,
+			);
+			name = HomeWattWidget;
+			packageProductDependencies = (
+			);
+			productName = HomeWattWidget;
+			productReference = E10000000000000000000002 /* HomeWattWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -219,6 +294,9 @@
 						CreatedOnToolsVersion = 26.6;
 						TestTargetID = DC5A7068306D8DEC0021112A;
 					};
+					E10000000000000000000007 = {
+						CreatedOnToolsVersion = 26.6;
+					};
 				};
 			};
 			buildConfigurationList = DC5A7064306D8DEC0021112A /* Build configuration list for PBXProject "HomeWatt" */;
@@ -232,6 +310,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				DCCCF9DC3087294F009F211C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				E10000000000000000000013 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DC5A706A306D8DEC0021112A /* Products */;
@@ -241,6 +320,7 @@
 				DC5A7068306D8DEC0021112A /* HomeWatt */,
 				DC5A7075306D8DEE0021112A /* HomeWattTests */,
 				DC5A707F306D8DEE0021112A /* HomeWattUITests */,
+				E10000000000000000000007 /* HomeWattWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -261,6 +341,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		DC5A707E306D8DEE0021112A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E10000000000000000000010 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -291,6 +378,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E10000000000000000000009 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E10000000000000000000017 /* HomeWatt/Services/LiveActivity/EnergyLiveActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -303,6 +398,11 @@
 			isa = PBXTargetDependency;
 			target = DC5A7068306D8DEC0021112A /* HomeWatt */;
 			targetProxy = DC5A7081306D8DEE0021112A /* PBXContainerItemProxy */;
+		};
+		E10000000000000000000006 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E10000000000000000000007 /* HomeWattWidget */;
+			targetProxy = DCE3A802308A899D00CF0A5C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -433,6 +533,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HomeWatt/HomeWatt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X72UA4TN98;
@@ -440,6 +541,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "HomeWatt uses Face ID to securely unlock your energy data.";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "HomeWatt uses HomeKit only to display and control accessories you choose.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -467,6 +569,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HomeWatt/HomeWatt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X72UA4TN98;
@@ -474,6 +577,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "HomeWatt uses Face ID to securely unlock your energy data.";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "HomeWatt uses HomeKit only to display and control accessories you choose.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -580,6 +684,40 @@
 			};
 			name = Release;
 		};
+		E10000000000000000000011 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = HomeWattWidget/HomeWattWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = X72UA4TN98;
+				INFOPLIST_FILE = HomeWattWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deshanlanka.HomeWatt.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E10000000000000000000012 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = HomeWattWidget/HomeWattWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = X72UA4TN98;
+				INFOPLIST_FILE = HomeWattWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.deshanlanka.HomeWatt.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -619,6 +757,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		E10000000000000000000008 /* Build configuration list for PBXNativeTarget "HomeWattWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E10000000000000000000011 /* Debug */,
+				E10000000000000000000012 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -628,6 +775,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 13.0.1;
+			};
+		};
+		E10000000000000000000013 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -672,6 +827,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DCCCF9DC3087294F009F211C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
+		};
+		E10000000000000000000014 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E10000000000000000000013 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

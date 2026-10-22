@@ -18,11 +18,13 @@ struct HomeWattApp: App {
     @State private var scenePhase: ScenePhase = .inactive
     @UIApplicationDelegateAdaptor(HomeWattAppDelegate.self) private var appDelegate
     @StateObject private var biometricLockManager = BiometricLockManager.shared
+    @StateObject private var notificationNavigation = NotificationNavigationState.shared
 
     init() {
 
         // Configure Firebase
         FirebaseApp.configure()
+        SentryDiagnostics.configure()
 
         // Register notification delegate
         UNUserNotificationCenter.current().delegate =
@@ -35,6 +37,7 @@ struct HomeWattApp: App {
         WindowGroup {
             ContentView()
             .environmentObject(biometricLockManager)
+            .environmentObject(notificationNavigation)
             .onChange(of: scenePhase) { newPhase in
                 switch newPhase {
                 case .active:

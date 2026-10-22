@@ -2,6 +2,7 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseMessaging
+import FirebaseFunctions
 import UIKit
 
 /// Bridges APNs and FCM. It stores only the current user's token; push delivery stays server-side.
@@ -9,6 +10,7 @@ import UIKit
 final class PushNotificationService: NSObject, MessagingDelegate {
     static let shared = PushNotificationService()
     private let database = Firestore.firestore()
+    private let functions = Functions.functions()
 
     private override init() { super.init() }
 
@@ -31,6 +33,25 @@ final class PushNotificationService: NSObject, MessagingDelegate {
         await store(token: token)
     }
 
+    func updateHighEnergyPreference(enabled: Bool) async {
+        guard let token = try? await Messaging.messaging().token() else { return }
+        await store(token: token, highEnergyAlertsEnabled: enabled)
+    }
+
+    /// Sends a remote alert to the user's *other* enabled devices. The current device receives the local alert.
+    func sendHighEnergyAlertToOtherDevices(currentPowerWatts: Double, thresholdWatts: Double) async {
+        guard let sourceToken = try? await Messaging.messaging().token() else { return }
+        do {
+            _ = try await functions.httpsCallable("sendHighEnergyPush").call([
+                "currentPowerWatts": currentPowerWatts,
+                "thresholdWatts": thresholdWatts,
+                "sourceToken": sourceToken
+            ])
+        } catch {
+            print("Remote high-energy notification was not sent: \(error.localizedDescription)")
+        }
+    }
+
     func removeCurrentUserToken() async {
         guard let userID = Auth.auth().currentUser?.uid,
               let token = try? await Messaging.messaging().token() else { return }
@@ -41,12 +62,13 @@ final class PushNotificationService: NSObject, MessagingDelegate {
         }
     }
 
-    private func store(token: String) async {
+    private func store(token: String, highEnergyAlertsEnabled: Bool = UserDefaults.standard.object(forKey: "homewatt.highEnergyAlertsEnabled") as? Bool ?? true) async {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         do {
             try await database.collection("users").document(userID).collection("fcmTokens").document(token).setData([
                 "token": token,
                 "platform": "ios",
+                "highEnergyAlertsEnabled": highEnergyAlertsEnabled,
                 "updatedAt": FieldValue.serverTimestamp()
             ], merge: true)
         } catch { print("Unable to store FCM token: \(error.localizedDescription)") }
