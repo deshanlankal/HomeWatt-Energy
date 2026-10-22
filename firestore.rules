@@ -1,17 +1,77 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function ownsPath(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function validHousehold(userId, data) {
+      return data.keys().hasOnly(['id', 'ownerId', 'name', 'type', 'residents', 'monthlyBudgetLKR', 'highEnergyThresholdWatts', 'electricityRatePerKWh', 'createdAt'])
+        && data.keys().hasAll(['id', 'ownerId', 'name', 'type', 'residents', 'monthlyBudgetLKR', 'highEnergyThresholdWatts', 'electricityRatePerKWh', 'createdAt'])
+        && data.id == userId && data.ownerId == userId
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && (data.type == 'house' || data.type == 'apartment')
+        && data.residents is int && data.residents > 0 && data.residents <= 100
+        && data.monthlyBudgetLKR is number && data.monthlyBudgetLKR >= 0
+        && data.highEnergyThresholdWatts is number && data.highEnergyThresholdWatts > 0
+        && data.electricityRatePerKWh is number && data.electricityRatePerKWh > 0
+        && data.createdAt is timestamp;
+    }
+
+    function validAppliance(userId, applianceId, data) {
+      return data.keys().hasOnly(['id', 'householdId', 'name', 'category', 'ratedPowerWatts', 'isOn', 'estimatedHoursPerDay', 'createdAt'])
+        && data.keys().hasAll(['id', 'householdId', 'name', 'category', 'ratedPowerWatts', 'isOn', 'estimatedHoursPerDay', 'createdAt'])
+        && data.id == applianceId && data.householdId == userId
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.category in ['airConditioner', 'refrigerator', 'television', 'washingMachine', 'fan', 'lighting', 'heater', 'other']
+        && data.ratedPowerWatts is number && data.ratedPowerWatts > 0
+        && data.estimatedHoursPerDay is number && data.estimatedHoursPerDay >= 0 && data.estimatedHoursPerDay <= 24
+        && data.isOn is bool && data.createdAt is timestamp;
+    }
+
+    function validEnergyReading(userId, readingId, data) {
+      return data.keys().hasOnly(['id', 'householdId', 'intervalStart', 'intervalEnd', 'energyKWh', 'averagePowerWatts', 'source', 'createdAt'])
+        && data.keys().hasAll(['id', 'householdId', 'intervalStart', 'intervalEnd', 'energyKWh', 'averagePowerWatts', 'source', 'createdAt'])
+        && data.id == readingId && data.householdId == userId
+        && data.intervalStart is timestamp && data.intervalEnd is timestamp && data.intervalStart < data.intervalEnd
+        && data.energyKWh is number && data.energyKWh >= 0
+        && data.averagePowerWatts is number && data.averagePowerWatts >= 0
+        && data.source == 'simulation' && data.createdAt is timestamp;
+    }
+
+    function validToken(tokenId, data) {
+      return data.keys().hasOnly(['token', 'platform', 'highEnergyAlertsEnabled', 'updatedAt'])
+        && data.keys().hasAll(['token', 'platform', 'highEnergyAlertsEnabled', 'updatedAt'])
+        && data.token == tokenId && data.platform == 'ios'
+        && data.highEnergyAlertsEnabled is bool && data.updatedAt is timestamp;
+    }
+
     match /households/{userId} {
-      allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow get: if ownsPath(userId);
+      allow create: if ownsPath(userId) && validHousehold(userId, request.resource.data);
+      allow update: if ownsPath(userId) && validHousehold(userId, request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if ownsPath(userId);
+
       match /appliances/{applianceId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read: if ownsPath(userId);
+        allow create: if ownsPath(userId) && validAppliance(userId, applianceId, request.resource.data);
+        allow update: if ownsPath(userId) && validAppliance(userId, applianceId, request.resource.data)
+          && request.resource.data.createdAt == resource.data.createdAt;
+        allow delete: if ownsPath(userId);
       }
+
       match /energyReadings/{readingId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read: if ownsPath(userId);
+        allow create, update: if ownsPath(userId) && validEnergyReading(userId, readingId, request.resource.data);
+        allow delete: if ownsPath(userId);
       }
     }
+
     match /users/{userId}/fcmTokens/{tokenId} {
-      allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      // The app writes token documents directly but never needs to list them.
+      allow create, update: if ownsPath(userId) && validToken(tokenId, request.resource.data);
+      allow delete: if ownsPath(userId);
     }
   }
 }
