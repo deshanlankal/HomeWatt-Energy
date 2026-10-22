@@ -35,6 +35,7 @@ final class AuthViewModel {
 
             Task { @MainActor in
                 self?.currentUser = user
+                SentryDiagnostics.setAuthenticatedUser(id: user?.uid)
                 if user != nil { await PushNotificationService.shared.refreshTokenAssociation() }
             }
         }

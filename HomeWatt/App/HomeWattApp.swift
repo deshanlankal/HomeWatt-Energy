@@ -23,6 +23,7 @@ struct HomeWattApp: App {
 
         // Configure Firebase
         FirebaseApp.configure()
+        SentryDiagnostics.configure()
 
         // Register notification delegate
         UNUserNotificationCenter.current().delegate =
