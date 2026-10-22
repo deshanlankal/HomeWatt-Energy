@@ -38,7 +38,7 @@ struct HomeWattApp: App {
             ContentView()
             .environmentObject(biometricLockManager)
             .environmentObject(notificationNavigation)
-            .onChange(of: scenePhase) { newPhase in
+            .onChange(of: scenePhase) { _, newPhase in
                 switch newPhase {
                 case .active:
                     biometricLockManager.handleAppForeground()

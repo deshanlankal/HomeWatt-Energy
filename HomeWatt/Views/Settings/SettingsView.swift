@@ -373,7 +373,9 @@ struct SettingsView: View {
                     "Sign Out",
                     role: .destructive
                 ) {
-                    authViewModel.logout()
+                    Task {
+                        await authViewModel.logout()
+                    }
                 }
 
             } message: {

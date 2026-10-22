@@ -90,12 +90,15 @@ final class AuthViewModel {
 
     // MARK: - Logout
 
-    func logout() {
-        Task { await PushNotificationService.shared.removeCurrentUserToken() }
+    func logout() async {
+        // The token must be removed while Firebase still exposes the account UID.
+        await PushNotificationService.shared.removeCurrentUserToken()
+
         do {
             try authService.logout()
             currentUser = nil
             errorMessage = nil
+            HighEnergyAlertManager.shared.clearAllStates()
         } catch {
             errorMessage = error.localizedDescription
         }

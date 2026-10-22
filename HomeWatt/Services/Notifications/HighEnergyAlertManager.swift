@@ -87,4 +87,15 @@ final class HighEnergyAlertManager {
     func clearState(householdId: String) {
         defaults.removeObject(forKey: alertStateKey(householdId: householdId))
     }
+
+    /// Removes persisted crossing state when an account is signed out.
+    /// Household identifiers are user-owned, but clearing them avoids keeping
+    /// stale alert periods alive across authentication sessions.
+    func clearAllStates() {
+        let prefix = "homewatt.highEnergyAlertActive."
+
+        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix(prefix) {
+            defaults.removeObject(forKey: key)
+        }
+    }
 }

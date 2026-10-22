@@ -50,7 +50,7 @@ struct ContentView: View {
                     .ignoresSafeArea()
             }
         }
-        .onChange(of: authViewModel.isAuthenticated) { isAuthenticated in
+        .onChange(of: authViewModel.isAuthenticated) { _, isAuthenticated in
             if !isAuthenticated {
                 biometricLockManager.reset()
             }
@@ -91,7 +91,9 @@ struct ContentView: View {
             .buttonStyle(.borderedProminent)
 
             Button("Sign Out") {
-                authViewModel.logout()
+                Task {
+                    await authViewModel.logout()
+                }
             }
         }
         .padding(24)

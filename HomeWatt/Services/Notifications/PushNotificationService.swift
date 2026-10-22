@@ -53,10 +53,26 @@ final class PushNotificationService: NSObject, MessagingDelegate {
     }
 
     func removeCurrentUserToken() async {
-        guard let userID = Auth.auth().currentUser?.uid,
-              let token = try? await Messaging.messaging().token() else { return }
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+
+        let token = (try? await Messaging.messaging().token())
+            ?? defaults.string(forKey: associatedTokenKey(userID: userID))
+
+        guard let token else { return }
+
+        await removeToken(token, for: userID)
+    }
+
+    private let defaults = UserDefaults.standard
+
+    private func associatedTokenKey(userID: String) -> String {
+        "homewatt.fcmToken.\(userID)"
+    }
+
+    private func removeToken(_ token: String, for userID: String) async {
         do {
             try await database.collection("users").document(userID).collection("fcmTokens").document(token).delete()
+            defaults.removeObject(forKey: associatedTokenKey(userID: userID))
         } catch {
             print("Unable to remove FCM token: \(error.localizedDescription)")
         }
@@ -64,6 +80,13 @@ final class PushNotificationService: NSObject, MessagingDelegate {
 
     private func store(token: String, highEnergyAlertsEnabled: Bool = UserDefaults.standard.object(forKey: "homewatt.highEnergyAlertsEnabled") as? Bool ?? true) async {
         guard let userID = Auth.auth().currentUser?.uid else { return }
+
+        let tokenKey = associatedTokenKey(userID: userID)
+        if let previousToken = defaults.string(forKey: tokenKey),
+           previousToken != token {
+            await removeToken(previousToken, for: userID)
+        }
+
         do {
             try await database.collection("users").document(userID).collection("fcmTokens").document(token).setData([
                 "token": token,
@@ -71,6 +94,7 @@ final class PushNotificationService: NSObject, MessagingDelegate {
                 "highEnergyAlertsEnabled": highEnergyAlertsEnabled,
                 "updatedAt": FieldValue.serverTimestamp()
             ], merge: true)
+            defaults.set(token, forKey: tokenKey)
         } catch { print("Unable to store FCM token: \(error.localizedDescription)") }
     }
 }
