@@ -126,6 +126,28 @@ final class HouseholdViewModel {
         }
     }
 
+    
+    // MARK: - Update Electricity Rate
+
+    func updateElectricityRate(_ rate: Double) async -> Bool {
+
+        guard rate.isFinite,
+              rate > 0,
+              rate <= 1000 else {
+            errorMessage = "Please enter a valid electricity rate."
+            return false
+        }
+
+        guard var updatedHousehold = household else {
+            errorMessage = "No household is currently available."
+            return false
+        }
+
+        updatedHousehold.electricityRatePerKWh = rate
+
+        return await updateHousehold(updatedHousehold)
+    }
+
     // MARK: - Reset State
 
     func reset() {

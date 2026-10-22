@@ -12,32 +12,67 @@ import Charts
 
 struct DashboardView: View {
 
+    // MARK: - Environment
+
     @Environment(HouseholdViewModel.self)
     private var householdViewModel
+
+    // MARK: - ViewModels
 
     @State private var applianceViewModel = ApplianceViewModel()
     @State private var simulationViewModel = EnergySimulationViewModel()
 
+    // MARK: - Household
+
     private var householdId: String? {
         householdViewModel.household?.id
     }
+
+    // MARK: - Energy Summary
 
     private var energySummary: EnergySimulationSummary {
         EnergySimulationService.estimate(
             appliances: applianceViewModel.appliances
         )
     }
-    
+
+    // MARK: - Firebase Electricity Rate
+
+    private var electricityRatePerKWh: Double {
+        householdViewModel.household?
+            .electricityRatePerKWh
+            ?? ElectricityCostService.defaultRatePerKWh
+    }
+
+    // MARK: - Monthly Electricity Cost
+
     private var monthlyCostEstimate: ElectricityCostEstimate {
         ElectricityCostService.monthlyEstimate(
-            appliances: applianceViewModel.appliances
+            appliances: applianceViewModel.appliances,
+            ratePerKWh: electricityRatePerKWh
         )
     }
 
+    // MARK: - Today's Energy
 
     private var todayEnergyKWh: Double {
         simulationViewModel.totalEnergyKWh
     }
+
+    
+    private var highEnergyResult: HighEnergyDetectionResult? {
+
+        guard let household = householdViewModel.household else {
+            return nil
+        }
+
+        return HighEnergyDetectionService.evaluate(
+            appliances: applianceViewModel.appliances,
+            thresholdWatts: household.highEnergyThresholdWatts
+        )
+    }
+
+    // MARK: - Body
 
     var body: some View {
         NavigationStack {
@@ -47,12 +82,15 @@ struct DashboardView: View {
                     // MARK: - Header
 
                     VStack(alignment: .leading, spacing: 6) {
+
                         Text("Energy Overview")
                             .font(.title2.bold())
 
-                        Text("Your household's simulated electricity usage")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                        Text(
+                            "Your household's simulated electricity usage"
+                        )
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                     }
 
                     // MARK: - Statistics
@@ -107,6 +145,68 @@ struct DashboardView: View {
                     }
 
                     
+                    // MARK: - High Energy Detection
+
+                    if let result = highEnergyResult {
+
+                        VStack(alignment: .leading, spacing: 12) {
+
+                            Label(
+                                result.isHighEnergy
+                                    ? "High Energy Usage Detected"
+                                    : "Energy Usage Normal",
+                                systemImage: result.isHighEnergy
+                                    ? "exclamationmark.triangle.fill"
+                                    : "checkmark.circle.fill"
+                            )
+                            .font(.headline)
+                            .foregroundStyle(
+                                result.isHighEnergy ? Color.orange : HomeWattTheme.primary
+                            )
+
+                            Text(
+                                String(
+                                    format: "Current simulated power: %.0f W",
+                                    result.currentPowerWatts
+                                )
+                            )
+                            .font(.subheadline)
+
+                            Text(
+                                String(
+                                    format: "Household threshold: %.0f W",
+                                    result.thresholdWatts
+                                )
+                            )
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+
+                            if result.isHighEnergy {
+
+                                Text(
+                                    String(
+                                        format: "Power consumption exceeds your threshold by %.0f W.",
+                                        result.excessPowerWatts
+                                    )
+                                )
+                                .font(.footnote)
+                                .foregroundStyle(.orange)
+
+                            } else {
+
+                                Text("Your simulated active power is within the configured threshold.")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            Color(.secondarySystemGroupedBackground),
+                            in: RoundedRectangle(cornerRadius: 16)
+                        )
+                    }
+
                     // MARK: - Estimated Electricity Bill
 
                     VStack(alignment: .leading, spacing: 12) {
@@ -143,10 +243,12 @@ struct DashboardView: View {
                         )
                         .font(.caption)
                         .foregroundStyle(.secondary)
-
                     }
                     .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .leading
+                    )
                     .background(
                         Color(.secondarySystemGroupedBackground),
                         in: RoundedRectangle(cornerRadius: 16)
@@ -155,14 +257,25 @@ struct DashboardView: View {
                     // MARK: - Energy Chart
 
                     VStack(alignment: .leading, spacing: 12) {
+
                         Text("Today's Energy Usage")
                             .font(.headline)
 
-                        Text("Simulated consumption per 30-minute interval")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        Text(
+                            "Simulated consumption per 30-minute interval"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                        if simulationViewModel.readings.isEmpty {
+                        if simulationViewModel.isLoading {
+
+                            ProgressView("Loading energy readings...")
+                                .frame(
+                                    maxWidth: .infinity,
+                                    minHeight: 180
+                                )
+
+                        } else if simulationViewModel.readings.isEmpty {
 
                             ContentUnavailableView(
                                 "No Readings Yet",
@@ -175,6 +288,7 @@ struct DashboardView: View {
                         } else {
 
                             Chart(simulationViewModel.readings) { reading in
+
                                 BarMark(
                                     x: .value(
                                         "Time",
@@ -212,10 +326,12 @@ struct DashboardView: View {
                     // MARK: - Appliance Summary
 
                     VStack(alignment: .leading, spacing: 12) {
+
                         Text("Appliance Summary")
                             .font(.headline)
 
                         HStack {
+
                             Label(
                                 "Total Appliances",
                                 systemImage: "powerplug"
@@ -232,6 +348,7 @@ struct DashboardView: View {
                         Divider()
 
                         HStack {
+
                             Label(
                                 "Currently ON",
                                 systemImage: "power"
@@ -263,16 +380,34 @@ struct DashboardView: View {
 
                     // MARK: - Errors
 
+                    if let error = householdViewModel.errorMessage {
+
+                        Label(
+                            error,
+                            systemImage: "exclamationmark.triangle"
+                        )
+                        .foregroundStyle(.red)
+                        .font(.footnote)
+                    }
+
                     if let error = applianceViewModel.errorMessage {
-                        Label(error, systemImage: "exclamationmark.triangle")
-                            .foregroundStyle(.red)
-                            .font(.footnote)
+
+                        Label(
+                            error,
+                            systemImage: "exclamationmark.triangle"
+                        )
+                        .foregroundStyle(.red)
+                        .font(.footnote)
                     }
 
                     if let error = simulationViewModel.errorMessage {
-                        Label(error, systemImage: "exclamationmark.triangle")
-                            .foregroundStyle(.red)
-                            .font(.footnote)
+
+                        Label(
+                            error,
+                            systemImage: "exclamationmark.triangle"
+                        )
+                        .foregroundStyle(.red)
+                        .font(.footnote)
                     }
                 }
                 .padding()
@@ -280,11 +415,13 @@ struct DashboardView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Dashboard")
 
-            // MARK: - Refresh
+            // MARK: - Pull to Refresh
 
             .refreshable {
                 await loadDashboard()
             }
+
+            // MARK: - Initial Data Loading
 
             .task(id: householdId) {
                 await loadDashboard()
@@ -335,7 +472,11 @@ struct DashboardView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
+            HStack(
+                alignment: .firstTextBaseline,
+                spacing: 4
+            ) {
+
                 Text(value)
                     .font(.title2.bold())
                     .minimumScaleFactor(0.7)

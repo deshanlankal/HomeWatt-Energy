@@ -1,3 +1,4 @@
+
 //
 //  Household.swift
 //  HomeWatt
@@ -6,29 +7,34 @@
 //
 
 import Foundation
-
-import Foundation
 import FirebaseFirestore
 
 struct Household: Codable, Identifiable {
 
-    // The household ID matches the Firebase user's UID.
-    var id: String
+    // MARK: - Identity
 
-    // Firebase user who owns this household.
+    var id: String
     var ownerId: String
 
-    // Household configuration.
+    // MARK: - Household Configuration
+
     var name: String
     var type: HouseholdType
     var residents: Int
 
-    // Energy monitoring preferences.
+    // MARK: - Energy Preferences
+
     var monthlyBudgetLKR: Double
     var highEnergyThresholdWatts: Double
 
-    // Creation timestamp.
+    // Electricity rate in Sri Lankan Rupees per kWh.
+    var electricityRatePerKWh: Double
+
+    // MARK: - Metadata
+
     var createdAt: Date
+
+    // MARK: - Initializer
 
     init(
         id: String,
@@ -38,6 +44,7 @@ struct Household: Codable, Identifiable {
         residents: Int,
         monthlyBudgetLKR: Double,
         highEnergyThresholdWatts: Double,
+        electricityRatePerKWh: Double = 30.0,
         createdAt: Date = Date()
     ) {
         self.id = id
@@ -47,11 +54,84 @@ struct Household: Codable, Identifiable {
         self.residents = residents
         self.monthlyBudgetLKR = monthlyBudgetLKR
         self.highEnergyThresholdWatts = highEnergyThresholdWatts
+        self.electricityRatePerKWh = electricityRatePerKWh
         self.createdAt = createdAt
+    }
+
+    // MARK: - Coding Keys
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case ownerId
+        case name
+        case type
+        case residents
+        case monthlyBudgetLKR
+        case highEnergyThresholdWatts
+        case electricityRatePerKWh
+        case createdAt
+    }
+
+    // MARK: - Backward-Compatible Decoding
+
+    init(from decoder: Decoder) throws {
+
+        let container = try decoder.container(
+            keyedBy: CodingKeys.self
+        )
+
+        id = try container.decode(
+            String.self,
+            forKey: .id
+        )
+
+        ownerId = try container.decode(
+            String.self,
+            forKey: .ownerId
+        )
+
+        name = try container.decode(
+            String.self,
+            forKey: .name
+        )
+
+        type = try container.decode(
+            HouseholdType.self,
+            forKey: .type
+        )
+
+        residents = try container.decode(
+            Int.self,
+            forKey: .residents
+        )
+
+        monthlyBudgetLKR = try container.decode(
+            Double.self,
+            forKey: .monthlyBudgetLKR
+        )
+
+        highEnergyThresholdWatts = try container.decode(
+            Double.self,
+            forKey: .highEnergyThresholdWatts
+        )
+
+        // Existing Firestore documents may not have this field.
+        electricityRatePerKWh = try container.decodeIfPresent(
+            Double.self,
+            forKey: .electricityRatePerKWh
+        ) ?? 30.0
+
+        createdAt = try container.decode(
+            Date.self,
+            forKey: .createdAt
+        )
     }
 }
 
+// MARK: - Household Type
+
 enum HouseholdType: String, Codable, CaseIterable, Identifiable {
+
     case house
     case apartment
 
