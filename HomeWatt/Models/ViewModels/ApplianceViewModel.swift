@@ -146,15 +146,6 @@ final class ApplianceViewModel {
 
     private func evaluateHighEnergy(thresholdWatts: Double?, householdId: String) async {
         guard let thresholdWatts, thresholdWatts > 0 else { return }
-        SharedEnergySnapshotStore.save(
-            SharedEnergySnapshot(
-                activePowerWatts: totalActivePowerWatts,
-                todayEnergyKWh: 0,
-                estimatedMonthlyCostLKR: 0,
-                isHighEnergy: totalActivePowerWatts > thresholdWatts,
-                updatedAt: Date()
-            )
-        )
         await HighEnergyAlertManager.shared.checkEnergyUsage(householdId: householdId, appliances: appliances, thresholdWatts: thresholdWatts)
     }
 

@@ -426,6 +426,15 @@ struct DashboardView: View {
             .task(id: householdId) {
                 await loadDashboard()
             }
+            .onChange(of: applianceViewModel.totalActivePowerWatts) { _, _ in
+                Task { await publishPresentation() }
+            }
+            .onChange(of: energySummary.monthlyEnergyKWh) { _, _ in
+                Task { await publishPresentation() }
+            }
+            .onChange(of: todayEnergyKWh) { _, _ in
+                Task { await publishPresentation() }
+            }
         }
     }
 
@@ -451,6 +460,16 @@ struct DashboardView: View {
             )
 
         _ = await (applianceLoad, readingLoad)
+        await publishPresentation()
+    }
+
+    private func publishPresentation() async {
+        guard let household = householdViewModel.household else { return }
+        await EnergyPresentationPublisher.publish(
+            appliances: applianceViewModel.appliances,
+            readings: simulationViewModel.readings,
+            household: household
+        )
     }
 
     // MARK: - Statistic Card
