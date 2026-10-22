@@ -438,6 +438,8 @@
 				DEVELOPMENT_TEAM = X72UA4TN98;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "HomeWatt uses Face ID to securely unlock your energy data.";
+				INFOPLIST_KEY_NSHomeKitUsageDescription = "HomeWatt uses HomeKit only to display and control accessories you choose.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -470,6 +472,8 @@
 				DEVELOPMENT_TEAM = X72UA4TN98;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "HomeWatt uses Face ID to securely unlock your energy data.";
+				INFOPLIST_KEY_NSHomeKitUsageDescription = "HomeWatt uses HomeKit only to display and control accessories you choose.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

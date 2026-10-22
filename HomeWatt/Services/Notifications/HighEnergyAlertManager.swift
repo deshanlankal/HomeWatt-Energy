@@ -64,17 +64,21 @@ final class HighEnergyAlertManager {
                 return
             }
 
-            await NotificationService.shared.sendHighEnergyAlert(
+            let scheduled = await NotificationService.shared.sendHighEnergyAlert(
                 currentPowerWatts: result.currentPowerWatts,
                 thresholdWatts: result.thresholdWatts
             )
 
-            defaults.set(true, forKey: key)
+            if scheduled { defaults.set(true, forKey: key) }
 
         } else {
 
             // Reset once power returns to normal.
             defaults.set(false, forKey: key)
         }
+    }
+
+    func clearState(householdId: String) {
+        defaults.removeObject(forKey: alertStateKey(householdId: householdId))
     }
 }

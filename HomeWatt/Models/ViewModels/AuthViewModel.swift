@@ -35,6 +35,7 @@ final class AuthViewModel {
 
             Task { @MainActor in
                 self?.currentUser = user
+                if user != nil { await PushNotificationService.shared.refreshTokenAssociation() }
             }
         }
     }
@@ -89,6 +90,7 @@ final class AuthViewModel {
     // MARK: - Logout
 
     func logout() {
+        Task { await PushNotificationService.shared.removeCurrentUserToken() }
         do {
             try authService.logout()
             currentUser = nil

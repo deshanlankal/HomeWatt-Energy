@@ -27,6 +27,10 @@ struct MainTabView: View {
                 HistoryView()
             }
 
+            Tab("HomeKit", systemImage: "homekit", value: .homeKit) {
+                HomeKitView()
+            }
+
             Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
                 SettingsView()
             }

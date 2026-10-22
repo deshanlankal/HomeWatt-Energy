@@ -1,4 +1,3 @@
-
 //
 //  HomeWattApp.swift
 //  HomeWatt
@@ -9,11 +8,16 @@
 import SwiftUI
 import FirebaseCore
 import UserNotifications
+import UIKit
 
 @main
 struct HomeWattApp: App {
 
     // MARK: - App Initialization
+
+    @State private var scenePhase: ScenePhase = .inactive
+    @UIApplicationDelegateAdaptor(HomeWattAppDelegate.self) private var appDelegate
+    @StateObject private var biometricLockManager = BiometricLockManager.shared
 
     init() {
 
@@ -30,6 +34,17 @@ struct HomeWattApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            .environmentObject(biometricLockManager)
+            .onChange(of: scenePhase) { newPhase in
+                switch newPhase {
+                case .active:
+                    biometricLockManager.handleAppForeground()
+                case .background, .inactive:
+                    biometricLockManager.lockIfNeeded()
+                @unknown default:
+                    break
+                }
+            }
         }
     }
 }

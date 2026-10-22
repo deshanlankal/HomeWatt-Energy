@@ -44,7 +44,8 @@ final class ApplianceViewModel {
         name: String,
         category: ApplianceCategory,
         ratedPowerWatts: Double,
-        estimatedHoursPerDay: Double
+        estimatedHoursPerDay: Double,
+        highEnergyThresholdWatts: Double? = nil
     ) async -> Bool {
 
         let cleanName = name.trimmingCharacters(
@@ -77,6 +78,7 @@ final class ApplianceViewModel {
             try await applianceService.createAppliance(appliance)
             appliances.append(appliance)
             appliances.sort { $0.name < $1.name }
+            await evaluateHighEnergy(thresholdWatts: highEnergyThresholdWatts, householdId: householdId)
             return true
         } catch {
             errorMessage = error.localizedDescription
@@ -86,7 +88,7 @@ final class ApplianceViewModel {
 
     // MARK: - Update Appliance
 
-    func updateAppliance(_ appliance: Appliance) async -> Bool {
+    func updateAppliance(_ appliance: Appliance, highEnergyThresholdWatts: Double? = nil) async -> Bool {
         isSaving = true
         errorMessage = nil
 
@@ -102,6 +104,7 @@ final class ApplianceViewModel {
             }
 
             appliances.sort { $0.name < $1.name }
+            await evaluateHighEnergy(thresholdWatts: highEnergyThresholdWatts, householdId: appliance.householdId)
             return true
         } catch {
             errorMessage = error.localizedDescription
@@ -111,16 +114,16 @@ final class ApplianceViewModel {
 
     // MARK: - Toggle Appliance
 
-    func toggleAppliance(_ appliance: Appliance) async -> Bool {
+    func toggleAppliance(_ appliance: Appliance, highEnergyThresholdWatts: Double? = nil) async -> Bool {
         var updatedAppliance = appliance
         updatedAppliance.isOn.toggle()
 
-        return await updateAppliance(updatedAppliance)
+        return await updateAppliance(updatedAppliance, highEnergyThresholdWatts: highEnergyThresholdWatts)
     }
 
     // MARK: - Delete Appliance
 
-    func deleteAppliance(_ appliance: Appliance) async -> Bool {
+    func deleteAppliance(_ appliance: Appliance, highEnergyThresholdWatts: Double? = nil) async -> Bool {
         isSaving = true
         errorMessage = nil
 
@@ -133,11 +136,26 @@ final class ApplianceViewModel {
             )
 
             appliances.removeAll { $0.id == appliance.id }
+            await evaluateHighEnergy(thresholdWatts: highEnergyThresholdWatts, householdId: appliance.householdId)
             return true
         } catch {
             errorMessage = error.localizedDescription
             return false
         }
+    }
+
+    private func evaluateHighEnergy(thresholdWatts: Double?, householdId: String) async {
+        guard let thresholdWatts, thresholdWatts > 0 else { return }
+        SharedEnergySnapshotStore.save(
+            SharedEnergySnapshot(
+                activePowerWatts: totalActivePowerWatts,
+                todayEnergyKWh: 0,
+                estimatedMonthlyCostLKR: 0,
+                isHighEnergy: totalActivePowerWatts > thresholdWatts,
+                updatedAt: Date()
+            )
+        )
+        await HighEnergyAlertManager.shared.checkEnergyUsage(householdId: householdId, appliances: appliances, thresholdWatts: thresholdWatts)
     }
 
     // MARK: - Simulated Power Summary

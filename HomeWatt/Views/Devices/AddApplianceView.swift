@@ -12,6 +12,7 @@ import SwiftUI
 struct AddApplianceView: View {
 
     let householdId: String
+    let highEnergyThresholdWatts: Double?
     let applianceViewModel: ApplianceViewModel
 
     @Environment(\.dismiss) private var dismiss
@@ -67,7 +68,8 @@ struct AddApplianceView: View {
                                 name: name,
                                 category: category,
                                 ratedPowerWatts: ratedPowerWatts,
-                                estimatedHoursPerDay: estimatedHoursPerDay
+                                estimatedHoursPerDay: estimatedHoursPerDay,
+                                highEnergyThresholdWatts: highEnergyThresholdWatts
                             )
 
                             if success {

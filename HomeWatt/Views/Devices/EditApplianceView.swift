@@ -13,6 +13,7 @@ struct EditApplianceView: View {
 
     let appliance: Appliance
     let applianceViewModel: ApplianceViewModel
+    let highEnergyThresholdWatts: Double?
 
     @Environment(\.dismiss) private var dismiss
 
@@ -23,10 +24,12 @@ struct EditApplianceView: View {
 
     init(
         appliance: Appliance,
-        applianceViewModel: ApplianceViewModel
+        applianceViewModel: ApplianceViewModel,
+        highEnergyThresholdWatts: Double?
     ) {
         self.appliance = appliance
         self.applianceViewModel = applianceViewModel
+        self.highEnergyThresholdWatts = highEnergyThresholdWatts
 
         _name = State(initialValue: appliance.name)
         _category = State(initialValue: appliance.category)
@@ -92,7 +95,7 @@ struct EditApplianceView: View {
                             updated.estimatedHoursPerDay = estimatedHoursPerDay
 
                             let success = await applianceViewModel
-                                .updateAppliance(updated)
+                                .updateAppliance(updated, highEnergyThresholdWatts: highEnergyThresholdWatts)
 
                             if success {
                                 dismiss()

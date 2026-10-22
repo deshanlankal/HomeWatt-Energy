@@ -1,4 +1,3 @@
-
 import SwiftUI
 import FirebaseAuth
 
@@ -10,37 +9,51 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass)
     private var horizontalSizeClass
 
+    @EnvironmentObject private var biometricLockManager: BiometricLockManager
+
     var body: some View {
-        Group {
-            if !authViewModel.isAuthenticated {
-                LoginView(authViewModel: authViewModel)
+        ZStack {
+            Group {
+                if !authViewModel.isAuthenticated {
+                    LoginView(authViewModel: authViewModel)
 
-            } else if !householdViewModel.hasLoadedHousehold {
-                ProgressView("Loading your household...")
+                } else if !householdViewModel.hasLoadedHousehold {
+                    ProgressView("Loading your household...")
 
-            } else if householdViewModel.errorMessage != nil
-                        && !householdViewModel.hasHousehold {
-                householdErrorView
+                } else if householdViewModel.errorMessage != nil
+                            && !householdViewModel.hasHousehold {
+                    householdErrorView
 
-            } else if !householdViewModel.hasHousehold {
-                HouseholdOnboardingView(
-                    householdViewModel: householdViewModel
-                )
+                } else if !householdViewModel.hasHousehold {
+                    HouseholdOnboardingView(
+                        householdViewModel: householdViewModel
+                    )
 
-            } else {
-                mainApplicationView
+                } else {
+                    mainApplicationView
+                }
+            }
+            .environment(authViewModel)
+            .environment(householdViewModel)
+            .task(id: authViewModel.currentUser?.uid) {
+                householdViewModel.reset()
+
+                guard authViewModel.isAuthenticated else {
+                    return
+                }
+
+                await householdViewModel.loadHousehold()
+            }
+
+            if biometricLockManager.isLocked {
+                BiometricLockView()
+                    .ignoresSafeArea()
             }
         }
-        .environment(authViewModel)
-        .environment(householdViewModel)
-        .task(id: authViewModel.currentUser?.uid) {
-            householdViewModel.reset()
-
-            guard authViewModel.isAuthenticated else {
-                return
+        .onChange(of: authViewModel.isAuthenticated) { isAuthenticated in
+            if !isAuthenticated {
+                biometricLockManager.reset()
             }
-
-            await householdViewModel.loadHousehold()
         }
     }
 

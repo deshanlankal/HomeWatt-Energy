@@ -21,6 +21,7 @@ struct DevicesView: View {
     private var householdId: String? {
         householdViewModel.household?.id
     }
+    private var highEnergyThreshold: Double? { householdViewModel.household?.highEnergyThresholdWatts }
 
     var body: some View {
         NavigationStack {
@@ -117,7 +118,8 @@ struct DevicesView: View {
                                             Task {
                                                 await applianceViewModel
                                                     .toggleAppliance(
-                                                        appliance
+                                                        appliance,
+                                                        highEnergyThresholdWatts: highEnergyThreshold
                                                     )
                                             }
                                         }
@@ -141,7 +143,7 @@ struct DevicesView: View {
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 Button(role: .destructive) {
                                     Task {
-                                        await applianceViewModel.deleteAppliance(appliance)
+                                        await applianceViewModel.deleteAppliance(appliance, highEnergyThresholdWatts: highEnergyThreshold)
                                     }
                                 } label: {
                                     Label("Delete", systemImage: "trash")
@@ -184,7 +186,8 @@ struct DevicesView: View {
                 if let householdId {
                     AddApplianceView(
                         householdId: householdId,
-                        applianceViewModel: applianceViewModel
+                        applianceViewModel: applianceViewModel,
+                        highEnergyThresholdWatts: highEnergyThreshold
                     )
                 }
             }
@@ -194,7 +197,8 @@ struct DevicesView: View {
             .sheet(item: $selectedAppliance) { appliance in {
                 EditApplianceView(
                     appliance: appliance,
-                    applianceViewModel: applianceViewModel
+                    applianceViewModel: applianceViewModel,
+                    highEnergyThresholdWatts: highEnergyThreshold
                 )
             }()
 

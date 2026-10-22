@@ -32,6 +32,8 @@ struct MainSidebarView: View {
                     DevicesView()
                 case .history:
                     HistoryView()
+                case .homeKit:
+                    HomeKitView()
                 case .settings:
                     SettingsView()
                 }

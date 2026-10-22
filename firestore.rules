@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /households/{userId} {
+      allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      match /appliances/{applianceId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      match /energyReadings/{readingId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    match /users/{userId}/fcmTokens/{tokenId} {
+      allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

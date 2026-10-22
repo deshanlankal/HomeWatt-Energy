@@ -48,17 +48,17 @@ final class NotificationService {
     func sendHighEnergyAlert(
         currentPowerWatts: Double,
         thresholdWatts: Double
-    ) async {
+    ) async -> Bool {
 
         guard currentPowerWatts.isFinite,
               thresholdWatts.isFinite,
               thresholdWatts > 0,
               currentPowerWatts > thresholdWatts else {
-            return
+            return false
         }
 
         guard await notificationsEnabled() else {
-            return
+            return false
         }
 
         let content = UNMutableNotificationContent()
@@ -84,8 +84,10 @@ final class NotificationService {
 
         do {
             try await notificationCenter.add(request)
+            return true
         } catch {
             print("Unable to schedule notification: \(error.localizedDescription)")
+            return false
         }
     }
 }

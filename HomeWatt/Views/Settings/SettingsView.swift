@@ -1,4 +1,3 @@
-
 //
 //  SettingsView.swift
 //  HomeWatt
@@ -30,6 +29,10 @@ struct SettingsView: View {
     // User preference for high-energy alerts.
     @AppStorage("homewatt.highEnergyAlertsEnabled")
     private var highEnergyAlertsEnabled = true
+
+    // New biometric lock setting
+    @AppStorage("homewatt.biometricLockEnabled")
+    private var biometricLockEnabled = false
 
     // MARK: - State
 
@@ -270,6 +273,25 @@ struct SettingsView: View {
                     }
                 }
 
+                // MARK: - Security & Biometrics
+
+                Section("Security & Biometrics") {
+                    Toggle(isOn: Binding(get: { biometricLockEnabled }, set: { enabled in
+                        Task {
+                            if enabled {
+                                if await BiometricLockManager.shared.enableAfterVerification() { biometricLockEnabled = true }
+                            } else { biometricLockEnabled = false; BiometricLockManager.shared.biometricLockEnabled = false }
+                        }
+                    })) {
+                        Label("Require Face ID / Touch ID to Unlock", systemImage: "faceid")
+                    }
+                    .tint(HomeWattTheme.primary)
+                    .accessibilityLabel("Require biometric authentication")
+                    .accessibilityHint("Enable Face ID or Touch ID to unlock the app on launch or resume.")
+                }
+
+                LiveActivityControlView()
+
                 // MARK: - About
 
                 Section("About") {
@@ -302,10 +324,8 @@ struct SettingsView: View {
             .onAppear {
 
                 loadElectricityRate()
-
-                Task {
-                    await refreshNotificationStatus()
-                }
+                BiometricLockManager.shared.biometricLockEnabled = biometricLockEnabled
+                Task { await refreshNotificationStatus() }
             }
 
             // MARK: - Household Rate Changes

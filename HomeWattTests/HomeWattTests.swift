@@ -10,10 +10,19 @@ import Testing
 
 struct HomeWattTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-        // Swift Testing Documentation
-        // https://developer.apple.com/documentation/testing
+    @Test func highEnergyOnlyCrossesStrictlyAboveThreshold() {
+        let atThreshold = HighEnergyDetectionService.evaluate(currentPowerWatts: 1000, thresholdWatts: 1000)
+        let aboveThreshold = HighEnergyDetectionService.evaluate(currentPowerWatts: 1001, thresholdWatts: 1000)
+
+        #expect(!atThreshold.isHighEnergy)
+        #expect(aboveThreshold.isHighEnergy)
+        #expect(aboveThreshold.excessPowerWatts == 1)
+    }
+
+    @Test func invalidPowerIsNormalisedSafely() {
+        let result = HighEnergyDetectionService.evaluate(currentPowerWatts: .infinity, thresholdWatts: 500)
+        #expect(result.currentPowerWatts == 0)
+        #expect(!result.isHighEnergy)
     }
 
 }
