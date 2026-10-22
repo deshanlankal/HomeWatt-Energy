@@ -186,8 +186,8 @@ struct DevicesView: View {
                 if let householdId {
                     AddApplianceView(
                         householdId: householdId,
-                        applianceViewModel: applianceViewModel,
-                        highEnergyThresholdWatts: highEnergyThreshold
+                        highEnergyThresholdWatts: highEnergyThreshold,
+                        applianceViewModel: applianceViewModel
                     )
                 }
             }

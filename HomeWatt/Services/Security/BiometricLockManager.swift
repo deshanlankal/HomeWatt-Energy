@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import LocalAuthentication
 
 /// A local privacy gate. Firebase remains the source of account authentication.

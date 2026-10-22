@@ -31,7 +31,7 @@ private struct EnergyProvider: TimelineProvider {
     }
 }
 
-struct HomeWattWidgetView: View {
+private struct HomeWattWidgetView: View {
     let entry: EnergyEntry
     var body: some View {
         if let item = entry.snapshot {
@@ -41,10 +41,18 @@ struct HomeWattWidgetView: View {
                 Text("Today \(item.todayEnergyKWh, format: .number.precision(.fractionLength(1))) kWh").font(.caption)
                 Text("Est. Rs. \(item.estimatedMonthlyCostLKR, format: .number.precision(.fractionLength(0))) / month").font(.caption)
                 if item.isHighEnergy { Label("High simulated usage", systemImage: "exclamationmark.triangle.fill").font(.caption).foregroundStyle(.orange) }
-            }.containerBackground(.fill.tertiary, for: .widget)
+            }
+            .padding()
+            .background(Color(.systemBackground))
         } else {
-            ContentUnavailableView("No Energy Data", systemImage: "bolt.slash", description: Text("Open HomeWatt to refresh the simulated snapshot."))
-                .containerBackground(.fill.tertiary, for: .widget)
+            VStack(spacing: 8) {
+                Image(systemName: "bolt.slash").font(.title).foregroundStyle(.secondary)
+                Text("No Energy Data").font(.headline)
+                Text("Open HomeWatt to refresh the simulated snapshot.")
+                    .font(.caption).multilineTextAlignment(.center).foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(Color(.systemBackground))
         }
     }
 }
