@@ -39,7 +39,6 @@ final class ApplianceService {
 
     private init() {}
 
-    // MARK: - Firestore References
 
     private func appliancesReference(
         householdId: String
@@ -60,7 +59,6 @@ final class ApplianceService {
             .collection("appliances")
     }
 
-    // MARK: - Create Appliance
 
     func createAppliance(_ appliance: Appliance) async throws {
         let collection = try appliancesReference(
@@ -79,7 +77,6 @@ final class ApplianceService {
         try reference.setData(from: appliance)
     }
 
-    // MARK: - Fetch Appliances
 
     func fetchAppliances(
         householdId: String
@@ -97,7 +94,6 @@ final class ApplianceService {
         .sorted { $0.name < $1.name }
     }
 
-    // MARK: - Update Appliance
 
     func updateAppliance(_ appliance: Appliance) async throws {
         let collection = try appliancesReference(
@@ -115,7 +111,6 @@ final class ApplianceService {
         try reference.setData(from: appliance)
     }
 
-    // MARK: - Delete Appliance
 
     func deleteAppliance(
         applianceId: String,
@@ -134,7 +129,6 @@ final class ApplianceService {
         try await collection.document(applianceId).delete()
     }
 
-    // MARK: - Validation
 
     private func validate(_ appliance: Appliance) throws {
         let name = appliance.name.trimmingCharacters(

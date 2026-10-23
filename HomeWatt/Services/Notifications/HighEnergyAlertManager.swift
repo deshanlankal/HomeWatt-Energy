@@ -15,15 +15,11 @@ final class HighEnergyAlertManager {
 
     private init() {}
 
-    // MARK: - Alert State Key
-
     private func alertStateKey(
         householdId: String
     ) -> String {
         "homewatt.highEnergyAlertActive.\(householdId)"
     }
-
-    // MARK: - Check High Energy Usage
 
     func checkEnergyUsage(
         householdId: String,

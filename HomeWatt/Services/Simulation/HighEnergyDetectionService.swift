@@ -7,12 +7,6 @@
 
 import Foundation
 
-
-//
-//  HighEnergyDetectionService.swift
-//  HomeWatt
-//
-
 struct HighEnergyDetectionResult {
 
     let currentPowerWatts: Double

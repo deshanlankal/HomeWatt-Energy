@@ -13,8 +13,6 @@ import UIKit
 @main
 struct HomeWattApp: App {
 
-    // MARK: - App Initialization
-
     @State private var scenePhase: ScenePhase = .inactive
     @UIApplicationDelegateAdaptor(HomeWattAppDelegate.self) private var appDelegate
     @StateObject private var biometricLockManager = BiometricLockManager.shared
@@ -30,8 +28,6 @@ struct HomeWattApp: App {
         UNUserNotificationCenter.current().delegate =
             NotificationDelegateHolder.shared.delegate
     }
-
-    // MARK: - Main App Window
 
     var body: some Scene {
         WindowGroup {
@@ -52,7 +48,6 @@ struct HomeWattApp: App {
     }
 }
 
-// MARK: - Notification Delegate Holder
 
 @MainActor
 final class NotificationDelegateHolder {

@@ -3,7 +3,6 @@ import Foundation
 import WidgetKit
 #endif
 
-/// Codable bridge for the WidgetKit extension. The app group must be enabled before shipping.
 struct SharedEnergySnapshot: Codable {
     let activePowerWatts: Double
     let todayEnergyKWh: Double

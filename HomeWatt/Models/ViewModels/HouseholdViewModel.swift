@@ -30,7 +30,6 @@ final class HouseholdViewModel {
         household != nil
     }
 
-    // MARK: - Load Household
 
     func loadHousehold() async {
         isLoading = true
@@ -50,7 +49,6 @@ final class HouseholdViewModel {
         }
     }
 
-    // MARK: - Create Household
 
     func createHousehold(
         name: String,
@@ -108,7 +106,6 @@ final class HouseholdViewModel {
         }
     }
 
-    // MARK: - Update Household
 
     func updateHousehold(_ updatedHousehold: Household) async -> Bool {
         isSaving = true
@@ -125,9 +122,6 @@ final class HouseholdViewModel {
             return false
         }
     }
-
-    
-    // MARK: - Update Electricity Rate
 
     func updateElectricityRate(_ rate: Double) async -> Bool {
 
@@ -147,8 +141,6 @@ final class HouseholdViewModel {
 
         return await updateHousehold(updatedHousehold)
     }
-
-    // MARK: - Reset State
 
     func reset() {
         household = nil

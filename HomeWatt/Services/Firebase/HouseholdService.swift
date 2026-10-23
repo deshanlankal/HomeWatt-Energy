@@ -20,8 +20,6 @@ final class HouseholdService {
 
     private init() {}
 
-    // MARK: - Household Reference
-
     private func householdReference() throws -> DocumentReference {
         guard let userId = Auth.auth().currentUser?.uid else {
             throw HouseholdServiceError.notAuthenticated
@@ -31,8 +29,6 @@ final class HouseholdService {
             .collection("households")
             .document(userId)
     }
-
-    // MARK: - Create Household
 
     func createHousehold(_ household: Household) async throws {
         let reference = try householdReference()
@@ -52,7 +48,6 @@ final class HouseholdService {
         try reference.setData(from: household)
     }
 
-    // MARK: - Fetch Household
 
     func fetchHousehold() async throws -> Household? {
         let reference = try householdReference()
@@ -66,7 +61,6 @@ final class HouseholdService {
         return try snapshot.data(as: Household.self)
     }
 
-    // MARK: - Update Household
 
     func updateHousehold(_ household: Household) async throws {
         let reference = try householdReference()
@@ -84,7 +78,6 @@ final class HouseholdService {
     }
 }
 
-// MARK: - Service Errors
 
 enum HouseholdServiceError: LocalizedError {
 

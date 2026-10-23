@@ -40,8 +40,6 @@ final class EnergyReadingService {
 
     private init() {}
 
-    // MARK: - Firestore Reference
-
     private func readingsReference(
         householdId: String
     ) throws -> CollectionReference {
@@ -60,8 +58,6 @@ final class EnergyReadingService {
             .collection("energyReadings")
     }
 
-    // MARK: - Save Reading
-
     func saveReading(_ reading: EnergyReading) async throws {
 
         try validate(reading)
@@ -74,8 +70,6 @@ final class EnergyReadingService {
             .document(reading.id)
             .setData(from: reading)
     }
-
-    // MARK: - Save Multiple Readings
 
     func saveReadings(_ readings: [EnergyReading]) async throws {
 
@@ -117,7 +111,6 @@ final class EnergyReadingService {
         }
     }
 
-    // MARK: - Fetch Readings
 
     func fetchReadings(
         householdId: String,
@@ -156,7 +149,6 @@ final class EnergyReadingService {
 
     }
 
-    // MARK: - Delete Reading
 
     func deleteReading(
         readingId: String,
@@ -177,7 +169,6 @@ final class EnergyReadingService {
             .delete()
     }
 
-    // MARK: - Validation
 
     private func validate(_ reading: EnergyReading) throws {
 

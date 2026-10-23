@@ -1,6 +1,8 @@
 import SwiftUI
 import HomeKit
 
+
+//home kit SDK    integration filesssss /////
 struct HomeKitView: View {
     @StateObject private var service = HomeKitService.shared
 

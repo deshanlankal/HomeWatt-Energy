@@ -20,8 +20,6 @@ final class ApplianceViewModel {
     private(set) var isSaving = false
     private(set) var errorMessage: String?
 
-    // MARK: - Load Appliances
-
     func loadAppliances(householdId: String) async {
         isLoading = true
         errorMessage = nil
@@ -37,7 +35,6 @@ final class ApplianceViewModel {
         }
     }
 
-    // MARK: - Add Appliance
 
     func addAppliance(
         householdId: String,
@@ -86,7 +83,6 @@ final class ApplianceViewModel {
         }
     }
 
-    // MARK: - Update Appliance
 
     func updateAppliance(_ appliance: Appliance, highEnergyThresholdWatts: Double? = nil) async -> Bool {
         isSaving = true
@@ -112,7 +108,6 @@ final class ApplianceViewModel {
         }
     }
 
-    // MARK: - Toggle Appliance
 
     func toggleAppliance(_ appliance: Appliance, highEnergyThresholdWatts: Double? = nil) async -> Bool {
         var updatedAppliance = appliance
@@ -121,7 +116,6 @@ final class ApplianceViewModel {
         return await updateAppliance(updatedAppliance, highEnergyThresholdWatts: highEnergyThresholdWatts)
     }
 
-    // MARK: - Delete Appliance
 
     func deleteAppliance(_ appliance: Appliance, highEnergyThresholdWatts: Double? = nil) async -> Bool {
         isSaving = true
@@ -149,7 +143,6 @@ final class ApplianceViewModel {
         await HighEnergyAlertManager.shared.checkEnergyUsage(householdId: householdId, appliances: appliances, thresholdWatts: thresholdWatts)
     }
 
-    // MARK: - Simulated Power Summary
 
     var totalActivePowerWatts: Double {
         appliances
@@ -160,8 +153,6 @@ final class ApplianceViewModel {
     var activeApplianceCount: Int {
         appliances.filter(\.isOn).count
     }
-
-    // MARK: - Reset
 
     func reset() {
         appliances = []

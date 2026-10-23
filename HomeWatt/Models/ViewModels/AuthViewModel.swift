@@ -41,7 +41,6 @@ final class AuthViewModel {
         }
     }
 
-    // MARK: - Registration
 
     func register(
         email: String,
@@ -56,7 +55,6 @@ final class AuthViewModel {
         }
     }
 
-    // MARK: - Login
 
     func login(
         email: String,
@@ -70,8 +68,6 @@ final class AuthViewModel {
             )
         }
     }
-
-    // MARK: - Password Reset
 
     func resetPassword(email: String) async -> Bool {
         isLoading = true
@@ -88,8 +84,6 @@ final class AuthViewModel {
         }
     }
 
-    // MARK: - Logout
-
     func logout() async {
         // The token must be removed while Firebase still exposes the account UID.
         await PushNotificationService.shared.removeCurrentUserToken()
@@ -103,8 +97,6 @@ final class AuthViewModel {
             errorMessage = error.localizedDescription
         }
     }
-
-    // MARK: - Shared Authentication Logic
 
     private func performAuthentication(
         _ operation: () async throws -> User

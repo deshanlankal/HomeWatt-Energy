@@ -67,14 +67,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E10000000000000000000018 /* HomeWatt build file exceptions */ = {
+		E10000000000000000000018 /* Exceptions for "HomeWatt" folder in "HomeWatt" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = DC5A7068306D8DEC0021112A /* HomeWatt */;
 		};
-		E10000000000000000000019 /* HomeWattWidget build file exceptions */ = {
+		E10000000000000000000019 /* Exceptions for "HomeWattWidget" folder in "HomeWattWidget" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -85,10 +85,10 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		DC5A706B306D8DEC0021112A /* HomeWatt */ = {
-			exceptions = (
-				E10000000000000000000018 /* HomeWatt build file exceptions */,
-			);
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E10000000000000000000018 /* Exceptions for "HomeWatt" folder in "HomeWatt" target */,
+			);
 			path = HomeWatt;
 			sourceTree = "<group>";
 		};
@@ -103,10 +103,10 @@
 			sourceTree = "<group>";
 		};
 		E10000000000000000000003 /* HomeWattWidget */ = {
-			exceptions = (
-				E10000000000000000000019 /* HomeWattWidget build file exceptions */,
-			);
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E10000000000000000000019 /* Exceptions for "HomeWattWidget" folder in "HomeWattWidget" target */,
+			);
 			path = HomeWattWidget;
 			sourceTree = "<group>";
 		};
@@ -562,9 +562,11 @@
 				DEVELOPMENT_TEAM = X72UA4TN98;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HomeWatt/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "HomeWatt uses Face ID to securely unlock your energy data.";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "HomeWatt uses HomeKit only to display and control accessories you choose.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_SENTRY_DSN = "https://af4d99bfda60bd715af6b1163ac41e91@o4508453542100992.ingest.us.sentry.io/4512305079320576";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -598,9 +600,11 @@
 				DEVELOPMENT_TEAM = X72UA4TN98;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HomeWatt/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "HomeWatt uses Face ID to securely unlock your energy data.";
 				INFOPLIST_KEY_NSHomeKitUsageDescription = "HomeWatt uses HomeKit only to display and control accessories you choose.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_SENTRY_DSN = "https://af4d99bfda60bd715af6b1163ac41e91@o4508453542100992.ingest.us.sentry.io/4512305079320576";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

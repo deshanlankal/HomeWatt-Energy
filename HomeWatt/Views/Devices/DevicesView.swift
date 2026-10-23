@@ -27,8 +27,6 @@ struct DevicesView: View {
         NavigationStack {
             List {
 
-                // MARK: - Active Power Summary
-
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Simulated Active Power")
@@ -53,7 +51,6 @@ struct DevicesView: View {
                     )
                 }
 
-                // MARK: - Virtual Appliances
 
                 Section("Virtual Appliances") {
 
@@ -133,14 +130,10 @@ struct DevicesView: View {
                             }
                             .padding(.vertical, 6)
 
-                            // MARK: - Edit Appliance
-
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 selectedAppliance = appliance
                             }
-
-                            // MARK: - Delete Appliance
 
                             
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -158,8 +151,6 @@ struct DevicesView: View {
                     }
                 }
 
-                // MARK: - Error Message
-
                 if let error = applianceViewModel.errorMessage {
                     Section {
                         Text(error)
@@ -169,8 +160,6 @@ struct DevicesView: View {
                 }
             }
             .navigationTitle("Devices")
-
-            // MARK: - Add Appliance Button
 
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -185,8 +174,6 @@ struct DevicesView: View {
                 }
             }
 
-            // MARK: - Add Appliance Sheet
-
             .sheet(isPresented: $showAddAppliance) {
                 if let householdId {
                     AddApplianceView(
@@ -197,8 +184,6 @@ struct DevicesView: View {
                 }
             }
 
-            // MARK: - Edit Appliance Sheet
-
             .sheet(item: $selectedAppliance) { appliance in {
                 EditApplianceView(
                     appliance: appliance,
@@ -208,8 +193,6 @@ struct DevicesView: View {
             }()
 
             }
-
-            // MARK: - Load Appliances From Firebase
 
             .task(id: householdId) {
                 applianceViewModel.reset()

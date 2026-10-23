@@ -17,7 +17,6 @@ final class AuthenticationService {
 
     private init() {}
 
-    // MARK: - Register
 
     func register(
         email: String,
@@ -33,7 +32,6 @@ final class AuthenticationService {
         return result.user
     }
 
-    // MARK: - Login
 
     func login(
         email: String,
@@ -49,20 +47,15 @@ final class AuthenticationService {
         return result.user
     }
 
-    // MARK: - Current User
 
     var currentUser: User? {
         Auth.auth().currentUser
     }
 
-    // MARK: - Password Reset
-
     func resetPassword(email: String) async throws {
         try await Auth.auth()
             .sendPasswordReset(withEmail: email)
     }
-
-    // MARK: - Logout
 
     func logout() throws {
         try Auth.auth().signOut()

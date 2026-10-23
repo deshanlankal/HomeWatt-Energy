@@ -5,7 +5,6 @@ import FirebaseMessaging
 import FirebaseFunctions
 import UIKit
 
-/// Bridges APNs and FCM. It stores only the current user's token; push delivery stays server-side.
 @MainActor
 final class PushNotificationService: NSObject, MessagingDelegate {
     static let shared = PushNotificationService()

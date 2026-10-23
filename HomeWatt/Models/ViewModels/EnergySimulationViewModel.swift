@@ -21,7 +21,6 @@ final class EnergySimulationViewModel {
     private(set) var errorMessage: String?
     private(set) var successMessage: String?
 
-    // MARK: - Generate and Save One Day
 
     func generateDay(
         householdId: String,
@@ -81,7 +80,6 @@ final class EnergySimulationViewModel {
         }
     }
 
-    // MARK: - Load One Day
 
     func loadReadings(
         householdId: String,
@@ -117,7 +115,6 @@ final class EnergySimulationViewModel {
         }
     }
 
-    // MARK: - Summary
 
     var totalEnergyKWh: Double {
         readings.reduce(0) { $0 + $1.energyKWh }
@@ -135,7 +132,6 @@ final class EnergySimulationViewModel {
         } / Double(readings.count)
     }
 
-    // MARK: - Reset
 
     func reset() {
         readings = []

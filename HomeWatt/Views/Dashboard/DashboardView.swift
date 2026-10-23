@@ -12,23 +12,19 @@ import Charts
 
 struct DashboardView: View {
 
-    // MARK: - Environment
 
     @Environment(HouseholdViewModel.self)
     private var householdViewModel
 
-    // MARK: - ViewModels
 
     @State private var applianceViewModel = ApplianceViewModel()
     @State private var simulationViewModel = EnergySimulationViewModel()
 
-    // MARK: - Household
 
     private var householdId: String? {
         householdViewModel.household?.id
     }
 
-    // MARK: - Energy Summary
 
     private var energySummary: EnergySimulationSummary {
         EnergySimulationService.estimate(
@@ -36,7 +32,6 @@ struct DashboardView: View {
         )
     }
 
-    // MARK: - Firebase Electricity Rate
 
     private var electricityRatePerKWh: Double {
         householdViewModel.household?
@@ -44,7 +39,6 @@ struct DashboardView: View {
             ?? ElectricityCostService.defaultRatePerKWh
     }
 
-    // MARK: - Monthly Electricity Cost
 
     private var monthlyCostEstimate: ElectricityCostEstimate {
         ElectricityCostService.monthlyEstimate(
@@ -53,7 +47,6 @@ struct DashboardView: View {
         )
     }
 
-    // MARK: - Today's Energy
 
     private var todayEnergyKWh: Double {
         simulationViewModel.totalEnergyKWh
@@ -72,14 +65,11 @@ struct DashboardView: View {
         )
     }
 
-    // MARK: - Body
-
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
 
-                    // MARK: - Header
 
                     VStack(alignment: .leading, spacing: 6) {
 
@@ -93,7 +83,6 @@ struct DashboardView: View {
                         .foregroundStyle(.secondary)
                     }
 
-                    // MARK: - Statistics
 
                     LazyVGrid(
                         columns: [
@@ -143,9 +132,6 @@ struct DashboardView: View {
                             icon: "calendar"
                         )
                     }
-
-                    
-                    // MARK: - High Energy Detection
 
                     if let result = highEnergyResult {
 
@@ -212,8 +198,6 @@ struct DashboardView: View {
                                 : "Simulated energy usage is normal. Current power \(Int(result.currentPowerWatts)) watts is within the household threshold of \(Int(result.thresholdWatts)) watts."
                         )
                     }
-
-                    // MARK: - Estimated Electricity Bill
 
                     VStack(alignment: .leading, spacing: 12) {
 
@@ -329,8 +313,6 @@ struct DashboardView: View {
                         in: RoundedRectangle(cornerRadius: 16)
                     )
 
-                    // MARK: - Appliance Summary
-
                     VStack(alignment: .leading, spacing: 12) {
 
                         Text("Appliance Summary")
@@ -375,8 +357,6 @@ struct DashboardView: View {
                         in: RoundedRectangle(cornerRadius: 16)
                     )
 
-                    // MARK: - Simulation Information
-
                     Label(
                         "All energy values are simulated estimates, not live smart-meter readings.",
                         systemImage: "info.circle"
@@ -384,7 +364,6 @@ struct DashboardView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                    // MARK: - Errors
 
                     if let error = householdViewModel.errorMessage {
 
@@ -421,13 +400,10 @@ struct DashboardView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Dashboard")
 
-            // MARK: - Pull to Refresh
-
             .refreshable {
                 await loadDashboard()
             }
 
-            // MARK: - Initial Data Loading
 
             .task(id: householdId) {
                 await loadDashboard()
@@ -443,8 +419,6 @@ struct DashboardView: View {
             }
         }
     }
-
-    // MARK: - Load Firebase Data
 
     private func loadDashboard() async {
 
@@ -478,7 +452,6 @@ struct DashboardView: View {
         )
     }
 
-    // MARK: - Statistic Card
 
     private func statisticCard(
         title: String,

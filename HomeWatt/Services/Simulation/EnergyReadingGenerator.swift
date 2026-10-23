@@ -12,8 +12,6 @@ enum EnergyReadingGenerator {
     private static let intervalMinutes = 30
     private static let secondsPerHour = 3600.0
 
-    // MARK: - Generate One Day
-
     static func generateDay(
         householdId: String,
         appliances: [Appliance],
@@ -96,7 +94,6 @@ enum EnergyReadingGenerator {
         return readings
     }
 
-    // MARK: - Simulated Appliance Schedule
 
     private static func operatingFraction(
         for appliance: Appliance,
@@ -145,8 +142,6 @@ enum EnergyReadingGenerator {
 
         return 0
     }
-
-    // MARK: - Stable Schedule
 
     private static func simulatedStartHour(
         for applianceId: String

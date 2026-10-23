@@ -11,18 +11,15 @@ import FirebaseFirestore
 
 struct Household: Codable, Identifiable {
 
-    // MARK: - Identity
 
     var id: String
     var ownerId: String
 
-    // MARK: - Household Configuration
 
     var name: String
     var type: HouseholdType
     var residents: Int
 
-    // MARK: - Energy Preferences
 
     var monthlyBudgetLKR: Double
     var highEnergyThresholdWatts: Double
@@ -30,11 +27,9 @@ struct Household: Codable, Identifiable {
     // Electricity rate in Sri Lankan Rupees per kWh.
     var electricityRatePerKWh: Double
 
-    // MARK: - Metadata
 
     var createdAt: Date
 
-    // MARK: - Initializer
 
     init(
         id: String,
@@ -58,7 +53,6 @@ struct Household: Codable, Identifiable {
         self.createdAt = createdAt
     }
 
-    // MARK: - Coding Keys
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -72,7 +66,6 @@ struct Household: Codable, Identifiable {
         case createdAt
     }
 
-    // MARK: - Backward-Compatible Decoding
 
     init(from decoder: Decoder) throws {
 
@@ -128,7 +121,6 @@ struct Household: Codable, Identifiable {
     }
 }
 
-// MARK: - Household Type
 
 enum HouseholdType: String, Codable, CaseIterable, Identifiable {
 

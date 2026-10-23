@@ -43,8 +43,6 @@ struct HistoryView: View {
                         .datePickerStyle(.compact)
                     }
 
-                    // MARK: - Generate History
-
                     Button {
                         guard let householdId else { return }
 
@@ -88,8 +86,6 @@ struct HistoryView: View {
                         "Creates 30-minute simulated energy readings for the selected date."
                     )
 
-                    // MARK: - Messages
-
                     if let success = simulationViewModel.successMessage {
                         Label(success, systemImage: "checkmark.circle.fill")
                             .foregroundStyle(.green)
@@ -102,14 +98,10 @@ struct HistoryView: View {
                             .font(.subheadline)
                     }
 
-                    // MARK: - Loading
-
                     if simulationViewModel.isLoading {
                         ProgressView("Loading energy history...")
                             .frame(maxWidth: .infinity)
                     }
-
-                    // MARK: - Summary
 
                     if !simulationViewModel.readings.isEmpty {
 
@@ -143,8 +135,6 @@ struct HistoryView: View {
                                 icon: "clock"
                             )
                         }
-
-                        // MARK: - Chart
 
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Electricity Consumption")
@@ -213,7 +203,6 @@ struct HistoryView: View {
         }
     }
 
-    // MARK: - Reload Key
 
     private var historyLoadKey: String {
         let dateKey = Calendar.current.startOfDay(
@@ -223,7 +212,6 @@ struct HistoryView: View {
         return "\(householdId ?? "")-\(dateKey)"
     }
 
-    // MARK: - Summary Card
 
     private func summaryCard(
         title: String,

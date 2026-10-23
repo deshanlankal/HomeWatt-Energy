@@ -17,7 +17,6 @@ final class NotificationService {
 
     private init() {}
 
-    // MARK: - Request Permission
 
     func requestPermission() async -> Bool {
         do {
@@ -30,7 +29,6 @@ final class NotificationService {
         }
     }
 
-    // MARK: - Check Permission
 
     func notificationsEnabled() async -> Bool {
         let settings = await notificationCenter.notificationSettings()
@@ -43,7 +41,6 @@ final class NotificationService {
         }
     }
 
-    // MARK: - High Energy Notification
 
     func sendHighEnergyAlert(
         currentPowerWatts: Double,

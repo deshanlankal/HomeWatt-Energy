@@ -11,15 +11,12 @@ import FirebaseAuth
 
 struct SettingsView: View {
 
-    // MARK: - Environment
 
     @Environment(AuthViewModel.self)
     private var authViewModel
 
     @Environment(HouseholdViewModel.self)
     private var householdViewModel
-
-    // MARK: - App Storage
 
     // Local cache for the electricity rate.
     // The household model in Firebase is the source of truth.
@@ -34,8 +31,6 @@ struct SettingsView: View {
     @AppStorage("homewatt.biometricLockEnabled")
     private var biometricLockEnabled = false
 
-    // MARK: - State
-
     @State private var notificationsEnabled = false
 
     @State private var rateInput = ""
@@ -43,8 +38,6 @@ struct SettingsView: View {
     @State private var showRateSaved = false
     @State private var isSavingRate = false
     @State private var rateSaveError: String?
-
-    // MARK: - Validation
 
     private var validRate: Double? {
 
@@ -62,15 +55,11 @@ struct SettingsView: View {
         return rate
     }
 
-    // MARK: - Body
-
     var body: some View {
 
         NavigationStack {
 
             Form {
-
-                // MARK: - Notifications
 
                 Section {
 
@@ -143,7 +132,6 @@ struct SettingsView: View {
                     )
                 }
 
-                // MARK: - Account
 
                 Section("Account") {
 
@@ -162,7 +150,6 @@ struct SettingsView: View {
                     )
                 }
 
-                // MARK: - Electricity Settings
 
                 Section {
 
@@ -259,8 +246,6 @@ struct SettingsView: View {
                     )
                 }
 
-                // MARK: - Security
-
                 Section("Security") {
 
                     Button(role: .destructive) {
@@ -276,7 +261,6 @@ struct SettingsView: View {
                     }
                 }
 
-                // MARK: - Security & Biometrics
 
                 Section("Security & Biometrics") {
                     Toggle(isOn: Binding(get: { biometricLockEnabled }, set: { enabled in
@@ -295,7 +279,30 @@ struct SettingsView: View {
 
                 LiveActivityControlView()
 
-                // MARK: - About
+                //////////////
+
+//                #if DEBUG
+//                Section("Developer Diagnostics") {
+//
+//                    Button {
+//                        SentryDiagnostics.sendTestEvent()
+//                    } label: {
+//                        Label(
+//                            "Send Sentry Test Event",
+//                            systemImage: "ladybug.fill"
+//                        )
+//                    }
+//                    .tint(HomeWattTheme.primary)
+//
+//                    Text(
+//                        "Send a test diagnostic event to verify the Sentry SDK integration."
+//                    )
+//                    .font(.caption)
+//                    .foregroundStyle(.secondary)
+//                }
+//                #endif
+
+                //////////////
 
                 Section("About") {
 
@@ -322,7 +329,6 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
 
-            // MARK: - Load Settings
 
             .onAppear {
 
@@ -331,7 +337,6 @@ struct SettingsView: View {
                 Task { await refreshNotificationStatus() }
             }
 
-            // MARK: - Household Rate Changes
 
             .onChange(
                 of: householdViewModel.household?
@@ -341,7 +346,6 @@ struct SettingsView: View {
                 loadElectricityRate()
             }
 
-            // MARK: - Electricity Rate Saved Alert
 
             .alert(
                 "Electricity Rate Saved",
@@ -357,7 +361,6 @@ struct SettingsView: View {
                 )
             }
 
-            // MARK: - Sign Out Confirmation
 
             .alert(
                 "Sign Out",
@@ -387,7 +390,6 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Load Electricity Rate
 
     private func loadElectricityRate() {
 
@@ -401,7 +403,6 @@ struct SettingsView: View {
         )
     }
 
-    // MARK: - Save Electricity Rate to Firebase
 
     @MainActor
     private func saveElectricityRate() async {
@@ -456,7 +457,6 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Refresh Notification Permission
 
     @MainActor
     private func refreshNotificationStatus() async {
@@ -466,7 +466,6 @@ struct SettingsView: View {
                 .notificationsEnabled()
     }
 
-    // MARK: - Request Notification Permission
 
     @MainActor
     private func enableNotifications() async {

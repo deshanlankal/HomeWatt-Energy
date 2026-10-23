@@ -2,7 +2,6 @@ import Foundation
 import Combine
 import LocalAuthentication
 
-/// A local privacy gate. Firebase remains the source of account authentication.
 @MainActor
 final class BiometricLockManager: ObservableObject {
     static let shared = BiometricLockManager()
