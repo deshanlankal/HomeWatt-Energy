@@ -42,6 +42,7 @@ enum EnergyPresentationPublisher {
                 activePowerWatts: metrics.activePowerWatts,
                 todayEnergyKWh: metrics.todayEnergyKWh,
                 estimatedMonthlyCostLKR: metrics.estimatedMonthlyCostLKR,
+                highEnergyThresholdWatts: metrics.highEnergyThresholdWatts,
                 isHighEnergy: metrics.isHighEnergy,
                 updatedAt: Date()
             )

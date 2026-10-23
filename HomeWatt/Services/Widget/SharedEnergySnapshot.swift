@@ -8,6 +8,7 @@ struct SharedEnergySnapshot: Codable {
     let activePowerWatts: Double
     let todayEnergyKWh: Double
     let estimatedMonthlyCostLKR: Double
+    let highEnergyThresholdWatts: Double
     let isHighEnergy: Bool
     let updatedAt: Date
 }
@@ -21,6 +22,7 @@ enum SharedEnergySnapshotStore {
         defaults.set(try? JSONEncoder().encode(snapshot), forKey: key)
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadTimelines(ofKind: "HomeWattWidget")
+        WidgetCenter.shared.reloadTimelines(ofKind: "HomeWattPowerWidget")
         #endif
     }
 
