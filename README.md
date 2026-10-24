@@ -1,188 +1,92 @@
-# HomeWatt
+## Examiner / Lecturer Setup and Backend Access
 
-HomeWatt is an iPhone and iPad app for learning about household electricity use. It lets you add **virtual appliances**, turn them on or off, and see **simulated** power, energy, and cost estimates in Sri Lankan Rupees (LKR).
+This section explains how an assessor can run HomeWatt, access its Firebase backend, and review the additional integrations used in the project.
 
-> Important: HomeWatt does not connect to a real electricity meter. Every energy value in the app is simulated. HomeKit accessories, if you choose to connect them, are shown separately and are not treated as a source of electricity readings.
+### 1. Run HomeWatt in Xcode
 
-## How HomeWatt fits together
+1. Download the submitted source-code ZIP or clone the private GitHub repository.
+2. Extract the ZIP if applicable.
+3. Open `HomeWatt.xcodeproj` in Xcode.
+4. Allow Xcode to resolve the Swift Package dependencies.
+5. Select the **HomeWatt** application scheme.
+6. Choose a compatible iPhone or iPad simulator.
+7. Press **Command + R** to build and launch the application.
 
-You can use the app without knowing the technical details: HomeWatt calculates simulated readings on the device, saves your household data securely in Firebase when you are signed in, and can optionally show the same summary in a widget or a Live Activity.
+The application requires an internet connection for Firebase Authentication and cloud-based data operations.
 
-![HomeWatt architecture diagram](docs/architecture.svg)
+The Firebase iOS configuration file is located at:
 
-| Part | In plain language | Needed for normal simulator use? |
-| --- | --- | --- |
-| HomeWatt app | The screens where you manage virtual appliances and view your energy estimate. | Yes |
-| Simulation engine | Calculates simulated watts, kWh, costs, and high-energy events. | Yes |
-| Firebase | Saves accounts, households, appliances, readings, and notification tokens. | Needed for account-based data |
-| Widget and Live Activity | Shows a compact energy summary on the Home Screen, Lock Screen, or Dynamic Island. | Optional |
-| Cloud Function and APNs | Sends a remote high-energy notification when configured by the project owner. | Optional |
-| HomeKit and Sentry | Optional Apple Home controls and optional crash diagnostics. | Optional |
+`HomeWatt/Resources/GoogleService-Info.plist`
 
-## What you can do
+The configured Firebase project is `homewatt-947e6`.
 
-- Create an account and sign in with email and password.
-- Create a household profile and set an electricity rate and high-energy threshold.
-- Add virtual appliances such as fans, lights, refrigerators, and air conditioners.
-- Turn appliances on or off and view simulated active power.
-- View daily energy history, charts, peak demand, and estimated monthly LKR cost.
-- Receive high-energy alerts when simulated power goes above your chosen threshold.
-- Use Face ID or Touch ID as an optional local app lock.
-- View HomeKit homes and compatible accessories separately from virtual appliances.
-- Add HomeWatt Energy and HomeWatt Power Monitor widgets to the Home Screen.
-- Start a Live Activity for simulated energy monitoring on supported iPhones.
+### 2. Access the Firebase Backend
 
-## For everyday users
+Firebase provides authentication, household and appliance storage, energy-reading persistence, and cloud messaging services.
 
-1. Open HomeWatt.
-2. Choose **Sign Up** and create an account, or sign in if you already have one.
-3. Complete the household setup.
-4. Open **Devices** and add your appliances. These are virtual appliances for simulation.
-5. Turn an appliance on to see its effect in **Dashboard**.
-6. Open **History** to generate a day of simulated energy readings and view its chart.
-7. Open **Settings** to change the electricity rate, energy-alert threshold, notification preference, biometric lock, or Live Activity.
+**Firebase Console:** [https://console.firebase.google.com/](https://console.firebase.google.com/)
 
-## Open and run the app in Xcode
+**Firebase Project ID:** `homewatt-947e6`
 
-### What you need
+The examiner can inspect the following services, subject to the permissions granted:
 
-- A Mac with Xcode installed. Xcode 26 or newer is recommended for this project.
-- Internet access the first time, so Xcode can download Swift Package dependencies.
-- An Apple ID in Xcode if you want to run on a physical iPhone or iPad.
+- **Authentication:** Registered application users and enabled authentication providers.
+- **Cloud Firestore:** Household, appliance, energy-reading, and notification-related collections.
+- **Cloud Messaging:** Firebase Cloud Messaging configuration for remote notifications.
+- **Cloud Functions:** Deployed server-side notification logic, where available.
 
-### First run
+The examiner will be invited using their Google account with appropriately restricted Firebase/Google Cloud IAM permissions.
 
-1. Download or clone this repository.
-2. Open [HomeWatt.xcodeproj](/Users/deshanlanka/Documents/HomeWatt/HomeWatt.xcodeproj) in Xcode.
-3. Wait for package dependencies to finish resolving.
-4. At the top of Xcode, choose the **HomeWatt** scheme.
-5. Select an iPhone or iPad simulator.
-6. Press the Run button (`⌘R`).
-7. Create an account in the app and begin using the simulated appliance controls.
+Access to individual Firestore documents depends on the assigned permissions. Console access is separate from application authentication.
 
-To test a widget, first run the **HomeWatt** app scheme. Then long-press the simulator or device Home Screen, choose **Edit → Add Widget**, and search for **HomeWatt**.
+### 3. HomeWatt Application Test Account
 
-## Folder structure
+A dedicated HomeWatt demonstration account can be provided to the examiner through a secure communication channel.
 
-```text
-HomeWatt/
-├── HomeWatt.xcodeproj/             Xcode project and build settings
-├── HomeWatt/                       Main iOS/iPadOS application
-│   ├── App/                        App entry point and navigation
-│   ├── Models/                     Household, appliance, and energy data models
-│   ├── Models/ViewModels/          Screen state and app business logic
-│   ├── Services/
-│   │   ├── Firebase/               Authentication, household, and appliance storage
-│   │   ├── Simulation/             Simulated readings, cost, and energy detection
-│   │   ├── Notifications/          Local alerts and Firebase Cloud Messaging support
-│   │   ├── Security/               Face ID / Touch ID local app lock
-│   │   ├── HomeKit/                Optional HomeKit discovery and controls
-│   │   ├── LiveActivity/           Lock Screen and Dynamic Island support
-│   │   ├── Widget/                 Data shared with Home Screen widgets
-│   │   └── Diagnostics/            Optional Sentry diagnostics
-│   ├── Views/                      SwiftUI screens
-│   ├── Theme/                      HomeWatt colours and layout values
-│   └── Resources/                  Firebase iOS configuration
-├── HomeWattWidget/                 Widget extension and Live Activity UI
-├── HomeWattTests/                  Focused automated tests
-├── docs/                           Diagrams used by this README
-│   └── architecture.svg            Visual overview of the app's data flow
-├── functions/                      Firebase Cloud Function for remote energy alerts
-├── firestore.rules                 Firestore security rules to deploy
-└── README_CONFIGURATION.md         Apple and Firebase deployment checklist
-```
+The demonstration account allows the examiner to sign in, create or inspect a test household, manage virtual appliances, generate simulated energy readings, and explore the dashboard and history screens.
 
-## Configuration and `.env` files
+Login credentials will not be published in the README, GitHub repository, or final report.
 
-### Does the iOS app use a `.env` file?
+### 4. Sentry Diagnostics
 
-No. The iOS app does **not** read a `.env` file. Do not put passwords, Firebase Admin keys, APNs keys, or private API keys in the iOS app.
+HomeWatt integrates Sentry for optional application error monitoring.
 
-### Firebase iOS configuration
+**Sentry Dashboard:** [https://sentry.io/](https://sentry.io/)
 
-The app currently uses this file:
+The examiner can review the Sentry integration through the submitted demonstration recording, report screenshots, or a live walkthrough.
 
-```text
-HomeWatt/Resources/GoogleService-Info.plist
-```
+The current Sentry free-tier account does not provide a separate examiner login. Sentry is optional for normal application operation.
 
-This is the Firebase client configuration for the iOS app. If you use your own Firebase project, download a new `GoogleService-Info.plist` from Firebase Console and replace this file. Its bundle identifier must be:
+### 5. Advanced iOS Feature Testing
 
-```text
-com.deshanlanka.HomeWatt
-```
+- **WidgetKit:** Run HomeWatt and add a HomeWatt widget from the iOS Home Screen.
+- **ActivityKit:** Start a supported Live Activity from the application on a compatible iPhone.
+- **HomeKit:** Requires an accessible Apple Home configuration and compatible accessories for real accessory testing.
+- **Face ID / Touch ID:** Requires a compatible device or configured simulator.
+- **Push Notifications:** Remote notification delivery requires configured APNs, FCM, and the relevant backend services.
 
-### Sentry diagnostics
+All household electricity measurements in HomeWatt are simulated. HomeKit accessory states are separate from simulated energy readings.
 
-Sentry is optional. Its DSN is provided to the app through the Xcode build setting that generates the `SENTRY_DSN` Info.plist value. A Sentry DSN identifies the project that receives diagnostics; it is not an Admin secret.
+### 6. Repository and Final Submission
 
-To disable remote diagnostics, remove the `SENTRY_DSN` value from the **HomeWatt target → Build Settings** in Xcode. The app will continue to work.
+**GitHub Repository:**
 
-### Firebase Cloud Functions
+[https://github.com/deshanlankal/HomeWatt-Energy](https://github.com/deshanlankal/HomeWatt-Energy)
 
-The current function in [functions/index.js](/Users/deshanlanka/Documents/HomeWatt/functions/index.js) does not require a `.env` file. It uses Firebase's managed server identity and Firebase Admin SDK after deployment.
+**Final Commit SHA:**
 
-If you later add local-only secrets for Functions development, put them in:
+`3ef92b8dd73274e5dd82dbef6bf1f98699919475`
 
-```text
-functions/.env
-```
+**Final Commit URL:**
 
-Never commit that file. Use Firebase Secret Manager for deployed server-side secrets instead of sending secrets to the iOS app.
+[https://github.com/deshanlankal/HomeWatt-Energy/commit/3ef92b8dd73274e5dd82dbef6bf1f98699919475](https://github.com/deshanlankal/HomeWatt-Energy/commit/3ef92b8dd73274e5dd82dbef6bf1f98699919475)
 
-## Firebase setup for a project owner
+The examiner must have access to the private GitHub repository to inspect the submitted commit.
 
-These steps are required only if you want cloud sign-in, saved data, or remote notifications. The app can still be opened in the simulator without completing every optional service.
+### 7. Security
 
-1. In Firebase Console, open the `homewatt-947e6` project or create your own Firebase project.
-2. In **Authentication**, enable **Email/Password** sign-in.
-3. In **Firestore Database**, create a database in Native mode.
-4. Review and deploy [firestore.rules](/Users/deshanlanka/Documents/HomeWatt/firestore.rules).
-5. For remote high-energy notifications, configure APNs in Apple Developer and upload the APNs key in Firebase Console → Project settings → Cloud Messaging.
-6. Install the Firebase CLI, then deploy the Cloud Function from the repository root:
-
-   ```bash
-   npm install -g firebase-tools
-   firebase login
-   firebase use homewatt-947e6
-   cd functions
-   npm install
-   cd ..
-   firebase deploy --only functions
-   ```
-
-Cloud Functions deployment requires Firebase's Blaze plan. See [README_CONFIGURATION.md](/Users/deshanlanka/Documents/HomeWatt/README_CONFIGURATION.md) for the full configuration checklist.
-
-## Apple capabilities for device testing
-
-For physical-device testing, enable these capabilities for the app in Xcode and Apple Developer:
-
-- Push Notifications
-- Background Modes → Remote notifications
-- HomeKit
-- App Groups: `group.com.deshanlanka.HomeWatt`
-
-The widget extension must use the same App Group. Regenerate provisioning profiles after changing Apple capabilities.
-
-## Troubleshooting
-
-| Problem | What to try |
-| --- | --- |
-| Xcode cannot download packages | Choose **File → Packages → Resolve Package Versions** and check your internet connection. |
-| The app does not install in a simulator | Choose **Product → Clean Build Folder**, delete the old HomeWatt app from the simulator, then run again. |
-| A widget shows old content | Open HomeWatt once, then remove and add the widget again. Widget refreshes are controlled by iOS and are not continuous. |
-| Notifications do not arrive | Check iOS notification permission, the High Energy Alerts toggle, APNs/FCM configuration, and deployed Cloud Function. |
-| Face ID is unavailable | Test on a device/simulator that has Face ID or Touch ID configured. |
-| HomeKit is empty | Add a home or accessory in Apple's Home app first. HomeWatt will still work without HomeKit. |
-
-## Privacy and security
-
-- Household data is scoped to the signed-in Firebase user.
-- Firestore rules validate the data written by the app.
-- The app does not include Firebase Admin credentials or APNs private keys.
-- Simulated energy data is clearly labelled as simulated.
-- FCM device tokens are stored per signed-in user and removed during sign-out when possible.
-
-## Development checks
-
-The app, widget extension, and test target can be compiled with Xcode's **HomeWatt** scheme. Focused tests cover high-energy detection and widget metric calculations. Hardware-only features such as APNs, Face ID, HomeKit accessories, Live Activities, and actual widget hosting should also be tested on a physical device before release.
+- No administrator passwords or private service-account keys are included in the repository.
+- Firebase client configuration is separate from administrator credentials.
+- Firebase access is restricted using authentication, Firestore security rules, and applicable IAM permissions.
+- Examiner access and demonstration credentials are shared securely.
+- All energy readings are simulated and do not represent real household electricity consumption.
