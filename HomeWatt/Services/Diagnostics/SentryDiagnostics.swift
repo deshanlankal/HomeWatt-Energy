@@ -1,3 +1,4 @@
+// NOTE: Make sure the Info.plist file in your main app target contains a key 'SENTRY_DSN' with your Sentry DSN string. If it's missing or incorrect, Sentry diagnostics will not work and configuration will print a warning.
 
 import Foundation
 import Sentry
@@ -8,6 +9,7 @@ enum SentryDiagnostics {
 
         guard let dsn = Bundle.main.object(
             forInfoDictionaryKey: "SENTRY_DSN"
+            // Make sure that SENTRY_DSN is added to your Info.plist with the correct DSN string from Sentry.
         ) as? String,
         !dsn.trimmingCharacters(
             in: .whitespacesAndNewlines

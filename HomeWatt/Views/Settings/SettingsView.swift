@@ -34,10 +34,14 @@ struct SettingsView: View {
     @State private var notificationsEnabled = false
 
     @State private var rateInput = ""
+    @State private var thresholdInput = ""
     @State private var showSignOutConfirmation = false
     @State private var showRateSaved = false
+    @State private var showThresholdSaved = false
     @State private var isSavingRate = false
+    @State private var isSavingThreshold = false
     @State private var rateSaveError: String?
+    @State private var thresholdSaveError: String?
 
     private var validRate: Double? {
 
@@ -53,6 +57,22 @@ struct SettingsView: View {
         }
 
         return rate
+    }
+
+    private var validThreshold: Double? {
+
+        guard let threshold = Double(
+            thresholdInput.trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+        ),
+        threshold.isFinite,
+        threshold > 0,
+        threshold <= 100_000 else {
+            return nil
+        }
+
+        return threshold
     }
 
     var body: some View {
@@ -187,6 +207,40 @@ struct SettingsView: View {
                         )
                     )
 
+                    Divider()
+
+                    HStack {
+
+                        Label(
+                            "High-Energy Threshold",
+                            systemImage: "gauge.with.dots.needle.50percent"
+                        )
+
+                        Spacer()
+
+                        TextField(
+                            "3000",
+                            text: $thresholdInput
+                        )
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 110)
+                        .disabled(isSavingThreshold)
+
+                        Text("W")
+                            .foregroundStyle(.secondary)
+                    }
+
+                    LabeledContent(
+                        "Current Threshold",
+                        value: String(
+                            format: "%.0f W",
+                            householdViewModel.household?
+                                .highEnergyThresholdWatts
+                                ?? 0
+                        )
+                    )
+
                     // Save Rate Button
 
                     Button {
@@ -223,12 +277,56 @@ struct SettingsView: View {
                         householdViewModel.household == nil
                     )
 
+                    Button {
+
+                        Task {
+                            await saveHighEnergyThreshold()
+                        }
+
+                    } label: {
+
+                        HStack(spacing: 10) {
+
+                            if isSavingThreshold {
+
+                                ProgressView()
+
+                            } else {
+
+                                Image(
+                                    systemName: "bell.badge"
+                                )
+                            }
+
+                            Text(
+                                isSavingThreshold
+                                    ? "Saving..."
+                                    : "Save High-Energy Threshold"
+                            )
+                        }
+                    }
+                    .disabled(
+                        validThreshold == nil ||
+                        isSavingThreshold ||
+                        householdViewModel.household == nil
+                    )
+
                     // Rate Save Error
 
                     if let rateSaveError {
 
                         Label(
                             rateSaveError,
+                            systemImage: "exclamationmark.triangle"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                    }
+
+                    if let thresholdSaveError {
+
+                        Label(
+                            thresholdSaveError,
                             systemImage: "exclamationmark.triangle"
                         )
                         .font(.footnote)
@@ -242,7 +340,7 @@ struct SettingsView: View {
                 } footer: {
 
                     Text(
-                        "This is a simplified flat electricity rate for simulated cost estimation. It does not represent official Sri Lankan electricity tariff slabs."
+                        "The electricity rate is used only for simulated cost estimates. The high-energy threshold is measured in watts (W); set it to 10 W for a quick notification test."
                     )
                 }
 
@@ -281,26 +379,26 @@ struct SettingsView: View {
 
                 //////////////
 
-//                #if DEBUG
-//                Section("Developer Diagnostics") {
-//
-//                    Button {
-//                        SentryDiagnostics.sendTestEvent()
-//                    } label: {
-//                        Label(
-//                            "Send Sentry Test Event",
-//                            systemImage: "ladybug.fill"
-//                        )
-//                    }
-//                    .tint(HomeWattTheme.primary)
-//
-//                    Text(
-//                        "Send a test diagnostic event to verify the Sentry SDK integration."
-//                    )
-//                    .font(.caption)
-//                    .foregroundStyle(.secondary)
-//                }
-//                #endif
+                #if DEBUG
+                Section("Developer Diagnostics") {
+
+                    Button {
+                        SentryDiagnostics.sendTestEvent()
+                    } label: {
+                        Label(
+                            "Send Sentry Test Event",
+                            systemImage: "ladybug.fill"
+                        )
+                    }
+                    .tint(HomeWattTheme.primary)
+
+                    Text(
+                        "Send a test diagnostic event to verify the Sentry SDK integration."
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                #endif
 
                 //////////////
 
@@ -333,6 +431,7 @@ struct SettingsView: View {
             .onAppear {
 
                 loadElectricityRate()
+                loadHighEnergyThreshold()
                 BiometricLockManager.shared.biometricLockEnabled = biometricLockEnabled
                 Task { await refreshNotificationStatus() }
             }
@@ -344,6 +443,14 @@ struct SettingsView: View {
             ) { _, _ in
 
                 loadElectricityRate()
+            }
+
+            .onChange(
+                of: householdViewModel.household?
+                    .highEnergyThresholdWatts
+            ) { _, _ in
+
+                loadHighEnergyThreshold()
             }
 
 
@@ -358,6 +465,20 @@ struct SettingsView: View {
 
                 Text(
                     "Your electricity rate has been saved to Firebase Firestore."
+                )
+            }
+
+            .alert(
+                "High-Energy Threshold Saved",
+                isPresented: $showThresholdSaved
+            ) {
+
+                Button("OK", role: .cancel) {}
+
+            } message: {
+
+                Text(
+                    "Your high-energy alert threshold has been saved to Firebase Firestore."
                 )
             }
 
@@ -400,6 +521,20 @@ struct SettingsView: View {
         rateInput = String(
             format: "%.2f",
             savedRate
+        )
+    }
+
+    private func loadHighEnergyThreshold() {
+
+        guard let threshold = householdViewModel.household?
+            .highEnergyThresholdWatts else {
+            thresholdInput = ""
+            return
+        }
+
+        thresholdInput = String(
+            format: "%.0f",
+            threshold
         )
     }
 
@@ -454,6 +589,56 @@ struct SettingsView: View {
             rateSaveError =
                 householdViewModel.errorMessage
                 ?? "Unable to save the electricity rate."
+        }
+    }
+
+    @MainActor
+    private func saveHighEnergyThreshold() async {
+
+        guard !isSavingThreshold else {
+            return
+        }
+
+        guard let threshold = validThreshold else {
+
+            thresholdSaveError =
+                "Enter a threshold between 1 W and 100,000 W."
+
+            return
+        }
+
+        guard householdViewModel.household != nil else {
+
+            thresholdSaveError =
+                "No household is currently available."
+
+            return
+        }
+
+        isSavingThreshold = true
+        thresholdSaveError = nil
+
+        defer {
+            isSavingThreshold = false
+        }
+
+        let success = await householdViewModel
+            .updateHighEnergyThreshold(threshold)
+
+        if success {
+
+            thresholdInput = String(
+                format: "%.0f",
+                threshold
+            )
+
+            showThresholdSaved = true
+
+        } else {
+
+            thresholdSaveError =
+                householdViewModel.errorMessage
+                ?? "Unable to save the high-energy threshold."
         }
     }
 

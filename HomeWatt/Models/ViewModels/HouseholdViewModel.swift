@@ -142,6 +142,25 @@ final class HouseholdViewModel {
         return await updateHousehold(updatedHousehold)
     }
 
+    func updateHighEnergyThreshold(_ thresholdWatts: Double) async -> Bool {
+
+        guard thresholdWatts.isFinite,
+              thresholdWatts > 0,
+              thresholdWatts <= 100_000 else {
+            errorMessage = "Please enter a valid high-energy threshold."
+            return false
+        }
+
+        guard var updatedHousehold = household else {
+            errorMessage = "No household is currently available."
+            return false
+        }
+
+        updatedHousehold.highEnergyThresholdWatts = thresholdWatts
+
+        return await updateHousehold(updatedHousehold)
+    }
+
     func reset() {
         household = nil
         isLoading = false

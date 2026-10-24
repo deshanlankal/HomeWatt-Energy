@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title description">
+  <title id="title">HomeWatt architecture</title>
+  <desc id="description">A simple diagram showing the HomeWatt app, its simulation engine, optional widgets and Live Activities, Firebase storage, and optional remote notifications.</desc>
+  <defs>
+    <linearGradient id="appGradient" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0d8d67"/>
+      <stop offset="1" stop-color="#16b47f"/>
+    </linearGradient>
+    <style>
+      .heading { font: 700 32px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #12221c; }
+      .title { font: 700 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #ffffff; }
+      .body { font: 500 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #e9fff7; }
+      .darkTitle { font: 700 21px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #18332a; }
+      .darkBody { font: 500 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #416055; }
+      .small { font: 600 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; fill: #5f746b; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#74a493"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="680" rx="28" fill="#f3f8f5"/>
+  <text x="64" y="72" class="heading">How HomeWatt works</text>
+  <text x="64" y="108" class="small">The app is useful on its own; cloud and Apple integrations are optional additions.</text>
+
+  <rect x="64" y="162" width="330" height="322" rx="24" fill="url(#appGradient)"/>
+  <text x="96" y="214" class="title">HomeWatt app</text>
+  <text x="96" y="250" class="body">iPhone and iPad screens</text>
+  <text x="96" y="282" class="body">• Add virtual appliances</text>
+  <text x="96" y="314" class="body">• Turn appliances on or off</text>
+  <text x="96" y="346" class="body">• See cost and usage history</text>
+  <text x="96" y="378" class="body">• Set a high-energy alert</text>
+  <text x="96" y="442" class="body">All electricity values are simulated.</text>
+
+  <rect x="458" y="162" width="300" height="142" rx="24" fill="#ffffff" stroke="#b8d9ca" stroke-width="2"/>
+  <text x="490" y="211" class="darkTitle">Simulation engine</text>
+  <text x="490" y="245" class="darkBody">Creates watts, kWh, LKR cost,</text>
+  <text x="490" y="272" class="darkBody">and high-energy events on-device.</text>
+
+  <rect x="458" y="354" width="300" height="130" rx="24" fill="#ffffff" stroke="#b8d9ca" stroke-width="2"/>
+  <text x="490" y="403" class="darkTitle">Widgets &amp; Live Activity</text>
+  <text x="490" y="437" class="darkBody">A quick energy summary on Apple</text>
+  <text x="490" y="464" class="darkBody">surfaces. Optional.</text>
+
+  <rect x="822" y="122" width="314" height="180" rx="24" fill="#ffffff" stroke="#b8d9ca" stroke-width="2"/>
+  <text x="854" y="172" class="darkTitle">Firebase</text>
+  <text x="854" y="206" class="darkBody">Sign-in and secure storage for</text>
+  <text x="854" y="233" class="darkBody">households, appliances, readings,</text>
+  <text x="854" y="260" class="darkBody">and notification tokens.</text>
+
+  <rect x="822" y="354" width="314" height="180" rx="24" fill="#ffffff" stroke="#b8d9ca" stroke-width="2"/>
+  <text x="854" y="404" class="darkTitle">Optional services</text>
+  <text x="854" y="438" class="darkBody">Cloud Function + APNs: alerts</text>
+  <text x="854" y="465" class="darkBody">HomeKit: Apple Home accessories</text>
+  <text x="854" y="492" class="darkBody">Sentry: crash diagnostics</text>
+
+  <path d="M394 233 H450" fill="none" stroke="#74a493" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M394 414 H450" fill="none" stroke="#74a493" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M758 233 H814" fill="none" stroke="#74a493" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M758 419 H814" fill="none" stroke="#74a493" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M979 302 V346" fill="none" stroke="#74a493" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="64" y="572" width="1072" height="54" rx="16" fill="#dff5eb"/>
+  <text x="96" y="607" class="darkBody">Your app never contains Firebase Admin credentials, APNs private keys, or other server secrets.</text>
+</svg>

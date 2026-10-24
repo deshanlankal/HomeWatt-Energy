@@ -4,6 +4,21 @@ HomeWatt is an iPhone and iPad app for learning about household electricity use.
 
 > Important: HomeWatt does not connect to a real electricity meter. Every energy value in the app is simulated. HomeKit accessories, if you choose to connect them, are shown separately and are not treated as a source of electricity readings.
 
+## How HomeWatt fits together
+
+You can use the app without knowing the technical details: HomeWatt calculates simulated readings on the device, saves your household data securely in Firebase when you are signed in, and can optionally show the same summary in a widget or a Live Activity.
+
+![HomeWatt architecture diagram](docs/architecture.svg)
+
+| Part | In plain language | Needed for normal simulator use? |
+| --- | --- | --- |
+| HomeWatt app | The screens where you manage virtual appliances and view your energy estimate. | Yes |
+| Simulation engine | Calculates simulated watts, kWh, costs, and high-energy events. | Yes |
+| Firebase | Saves accounts, households, appliances, readings, and notification tokens. | Needed for account-based data |
+| Widget and Live Activity | Shows a compact energy summary on the Home Screen, Lock Screen, or Dynamic Island. | Optional |
+| Cloud Function and APNs | Sends a remote high-energy notification when configured by the project owner. | Optional |
+| HomeKit and Sentry | Optional Apple Home controls and optional crash diagnostics. | Optional |
+
 ## What you can do
 
 - Create an account and sign in with email and password.
@@ -70,6 +85,8 @@ HomeWatt/
 │   └── Resources/                  Firebase iOS configuration
 ├── HomeWattWidget/                 Widget extension and Live Activity UI
 ├── HomeWattTests/                  Focused automated tests
+├── docs/                           Diagrams used by this README
+│   └── architecture.svg            Visual overview of the app's data flow
 ├── functions/                      Firebase Cloud Function for remote energy alerts
 ├── firestore.rules                 Firestore security rules to deploy
 └── README_CONFIGURATION.md         Apple and Firebase deployment checklist
