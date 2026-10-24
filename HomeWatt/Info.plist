@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key></key>
+	<string></string>
 	<key>SENTRY_DSN</key>
 	<string>https://af4d99bfda60bd715af6b1163ac41e91@o4508453542100992.ingest.us.sentry.io/4512305079320576</string>
 </dict>

@@ -13,16 +13,51 @@ struct HomeKitView: View {
                     .font(.footnote).foregroundStyle(.secondary)
             }
             if !service.isReady { ProgressView("Discovering HomeKit homes…") }
-            else if service.homes.isEmpty { ContentUnavailableView("No HomeKit Homes", systemImage: "house.and.flag", description: Text("Add a home or accessories in Apple's Home app, then return here.")) }
+            else if service.homes.isEmpty {
+                ContentUnavailableView(
+                    "No HomeKit Homes",
+                    systemImage: "house.and.flag",
+                    description: Text("Create a test home and pair a simulated accessory below.")
+                )
+            }
             else {
                 ForEach(service.homes, id: \.uniqueIdentifier) { home in
                     Section(home.name) {
                         ForEach(home.accessories, id: \.uniqueIdentifier) { accessory in
-                            NavigationLink(accessory.name) { HomeKitAccessoryView(accessory: accessory) }
+                            NavigationLink {
+                                HomeKitAccessoryView(accessory: accessory)
+                            } label: {
+                                Text(accessory.name)
+                            }
                         }
                     }
                 }
             }
+
+            if service.isReady {
+                Section {
+                    Button {
+                        service.addAccessory()
+                    } label: {
+                        Label(
+                            service.isPairingAccessory
+                                ? "Opening HomeKit Setup..."
+                                : "Add HomeKit Accessory",
+                            systemImage: "plus.circle.fill"
+                        )
+                    }
+                    .disabled(service.isPairingAccessory)
+
+                    if service.isPairingAccessory {
+                        ProgressView("Opening Apple's pairing sheet...")
+                    }
+                } header: {
+                    Text("Accessory Setup")
+                } footer: {
+                    Text("For simulator testing, first create an accessory in Apple's HomeKit Accessory Simulator. Apple's pairing flow lets you choose or create a test home when needed.")
+                }
+            }
+
             if let error = service.errorMessage { Section { Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.orange) } }
         }
         .navigationTitle("HomeKit")
